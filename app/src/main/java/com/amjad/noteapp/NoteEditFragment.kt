@@ -1,7 +1,6 @@
 package com.amjad.noteapp.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,7 @@ class NoteEditFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(NotesListViewModel::class.java)
         // TODO: Use the ViewModel
-        Log.i("BB", viewModel.notes.toString())
+//        Log.i("BB", viewModel.notes.toString())
     }
 
 }
