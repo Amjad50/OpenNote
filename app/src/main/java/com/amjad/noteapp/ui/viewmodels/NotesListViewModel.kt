@@ -6,5 +6,6 @@ import androidx.lifecycle.ViewModel
 
 class NotesListViewModel : ViewModel() {
     // TODO: change to LiveData or something from web or DB
-    val notes: LiveData<List<String>> = MutableLiveData<List<String>>(listOf("welcome", "there"))
+    val notes: LiveData<List<String>> =
+        MutableLiveData<List<String>>(listOf("welcome", "there", "two\nlines"))
 }
