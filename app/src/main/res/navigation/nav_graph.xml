@@ -9,5 +9,15 @@
             android:id="@+id/mainFragment"
             android:name="com.amjad.noteapp.ui.fragments.NotesListFragment"
             android:label="MainFragment"
-            tools:layout="@layout/noteslist_fragment"/>
+            tools:layout="@layout/noteslist_fragment">
+        <action
+                android:id="@+id/action_mainFragment_to_noteEditFragment"
+                app:destination="@id/noteEditFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+            android:id="@+id/noteEditFragment"
+            android:name="com.amjad.noteapp.ui.fragments.NoteEditFragment"
+            android:label="NoteEditFragment" />
 </navigation>
