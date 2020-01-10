@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -10,17 +10,22 @@
                 type="android.view.View.OnClickListener" />
     </data>
 
-    <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
+    <!--    TODO: add ripple effect-->
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@android:color/darker_gray"
-            app:contentPadding="2dp"
-            android:onClick="@{onNoteClick}">
+            android:layout_margin="4dp"
+            android:onClick="@{onNoteClick}"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="2dp"
+            app:cardPreventCornerOverlap="false"
+            app:contentPadding="8dp"
+            app:rippleColor="@color/colorAccent">
 
         <TextView
                 android:id="@+id/note_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Note Title" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
