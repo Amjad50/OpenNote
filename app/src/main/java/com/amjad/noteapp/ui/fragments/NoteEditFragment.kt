@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.amjad.noteapp.R
 import com.amjad.noteapp.databinding.FragmentNoteEditBinding
 import com.amjad.noteapp.ui.viewmodels.NotesEditViewModel
 
@@ -36,14 +35,16 @@ class NoteEditFragment : Fragment() {
 
     private fun observersInit(binding: FragmentNoteEditBinding?) {
         viewModel.note.observe(this, Observer {
-            binding?.title?.text = it?.title ?: getString(R.string.no_title)
+            binding?.titleEdit?.setText(it?.title ?: "")
+        })
+        viewModel.note.observe(this, Observer {
+            binding?.noteEdit?.setText(it?.note ?: "")
         })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(NotesEditViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }
