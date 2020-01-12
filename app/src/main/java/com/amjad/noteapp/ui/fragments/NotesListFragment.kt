@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.amjad.noteapp.R
 import com.amjad.noteapp.databinding.NoteslistFragmentBinding
 import com.amjad.noteapp.ui.adapters.NotesListAdapter
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
@@ -41,8 +40,9 @@ class NotesListFragment : Fragment() {
 
     private fun openNewNote() {
         // not sending any id means that this is new note
+        val action = NotesListFragmentDirections.actionMainFragmentToNoteEditFragment()
         findNavController()
-            .navigate(R.id.action_mainFragment_to_noteEditFragment)
+            .navigate(action)
     }
 
     private fun observersInit(adapter: NotesListAdapter) {

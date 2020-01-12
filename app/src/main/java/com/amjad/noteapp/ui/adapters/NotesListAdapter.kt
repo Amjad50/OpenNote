@@ -1,16 +1,14 @@
 package com.amjad.noteapp.ui.adapters
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.amjad.noteapp.R
 import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.NoteitemViewBinding
-import com.amjad.noteapp.ui.fragments.NoteEditFragment
+import com.amjad.noteapp.ui.fragments.NotesListFragmentDirections
 
 class NotesListAdapter :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(_NoteListDiffItemCallBack()) {
@@ -34,10 +32,10 @@ class NotesListAdapter :
             binding.apply {
                 noteTitle = note.title
                 setOnNoteClick {
-                    val bundle = Bundle()
-                    bundle.putInt(NoteEditFragment.NOTEID_ARGUMENT, note.id)
+                    val action =
+                        NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(noteId = note.id)
                     it.findNavController()
-                        .navigate(R.id.action_mainFragment_to_noteEditFragment, bundle)
+                        .navigate(action)
                 }
                 executePendingBindings()
             }
