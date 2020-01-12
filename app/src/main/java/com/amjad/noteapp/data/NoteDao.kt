@@ -13,7 +13,7 @@ interface NoteDao {
     fun getNote(id: Int): LiveData<Note>
 
     @Update
-    fun updateNote(note: Note)
+    suspend fun updateNote(note: Note)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(note: Note)

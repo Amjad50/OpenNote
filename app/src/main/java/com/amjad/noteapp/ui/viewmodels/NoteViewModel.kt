@@ -1,26 +1,37 @@
 package com.amjad.noteapp.ui.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.data.NoteDatabase
 import com.amjad.noteapp.repositories.NotesRepository
 import kotlinx.coroutines.launch
 
-class NotesListViewModel(application: Application) : AndroidViewModel(application) {
+class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: NotesRepository
+
     val allNotes: LiveData<List<Note>>
+    private val selectedNote = MutableLiveData<Int>()
+    val note: LiveData<Note>
 
     init {
         val wordsDao = NoteDatabase.getDatabase(application).noteDao()
         repository = NotesRepository(wordsDao)
+        note = Transformations.switchMap(selectedNote) { id -> repository.getNote(id) }
         allNotes = repository.allNotes
     }
 
     fun insert(note: Note) = viewModelScope.launch {
         repository.insert(note)
     }
+
+    fun setNoteID(id: Int) {
+        selectedNote.value = id
+    }
+
+    fun updateNote(note: Note) = viewModelScope.launch {
+        repository.updateNote(note)
+    }
+
 }

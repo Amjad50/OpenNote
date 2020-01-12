@@ -10,10 +10,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.NoteslistFragmentBinding
 import com.amjad.noteapp.ui.adapters.NotesListAdapter
-import com.amjad.noteapp.ui.viewmodels.NotesListViewModel
+import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
 class NotesListFragment : Fragment() {
-    private lateinit var viewModel: NotesListViewModel
+    private lateinit var viewModel: NoteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +37,9 @@ class NotesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(NotesListViewModel::class.java)
+        viewModel = activity?.run {
+            ViewModelProviders.of(this)[NoteViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
     }
 
 }

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.FragmentNoteEditBinding
-import com.amjad.noteapp.ui.viewmodels.NotesEditViewModel
+import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
 class NoteEditFragment : Fragment() {
 
@@ -16,35 +16,43 @@ class NoteEditFragment : Fragment() {
         const val NOTEID_ARGUMENT = "com.android.noteapp.NoteEditFragment.note_id"
     }
 
-    private lateinit var viewModel: NotesEditViewModel
+    private lateinit var viewModel: NoteViewModel
+    private lateinit var binding: FragmentNoteEditBinding
     private var noteId: Int = -1
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = activity?.run {
+            ViewModelProviders.of(this)[NoteViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         noteId = arguments?.getInt(NOTEID_ARGUMENT) ?: -1
-        val binding = FragmentNoteEditBinding.inflate(inflater, container, false)
+        binding = FragmentNoteEditBinding.inflate(inflater, container, false)
 
-        observersInit(binding)
+        binding.setLifecycleOwner(this)
+
+        binding.model = viewModel
 
         viewModel.setNoteID(noteId)
 
         return binding.root
     }
 
-    private fun observersInit(binding: FragmentNoteEditBinding?) {
-        viewModel.note.observe(this, Observer {
-            binding?.titleEdit?.setText(it?.title ?: "")
-        })
-        viewModel.note.observe(this, Observer {
-            binding?.noteEdit?.setText(it?.note ?: "")
-        })
+    private fun saveNote() {
+        val newNote = Note(binding.titleEdit.text.toString(), binding.noteEdit.text.toString())
+        newNote.id = noteId
+
+        viewModel.updateNote(newNote)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(NotesEditViewModel::class.java)
+    override fun onStop() {
+        super.onStop()
+        saveNote()
     }
 
 }
