@@ -4,10 +4,13 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
                 name="onNoteClick"
                 type="android.view.View.OnClickListener" />
+
+        <variable
+                name="noteTitle"
+                type="String" />
     </data>
 
     <!--    TODO: add ripple effect-->
@@ -26,6 +29,7 @@
                 android:id="@+id/note_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{noteTitle}"
                 tools:text="Note Title" />
     </com.google.android.material.card.MaterialCardView>
 </layout>

@@ -24,7 +24,6 @@ class NotesListAdapter :
         )
     }
 
-
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
@@ -33,7 +32,7 @@ class NotesListAdapter :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
             binding.apply {
-                noteText.text = note.title!!
+                noteTitle = note.title
                 setOnNoteClick {
                     val bundle = Bundle()
                     bundle.putInt(NoteEditFragment.NOTEID_ARGUMENT, note.id)

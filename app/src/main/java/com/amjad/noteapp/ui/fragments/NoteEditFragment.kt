@@ -45,9 +45,14 @@ class NoteEditFragment : Fragment() {
 
     private fun saveNote() {
         val newNote = Note(binding.titleEdit.text.toString(), binding.noteEdit.text.toString())
-        newNote.id = noteId
 
-        viewModel.updateNote(newNote)
+        // no id sent mean that this is a new note
+        if (noteId != -1) {
+            newNote.id = noteId
+            viewModel.updateNote(newNote)
+        } else {
+            viewModel.insert(newNote)
+        }
     }
 
     override fun onStop() {
