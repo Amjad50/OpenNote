@@ -34,7 +34,7 @@ class NoteEditFragment : Fragment() {
         noteId = arguments?.getInt(NOTEID_ARGUMENT) ?: -1
         binding = FragmentNoteEditBinding.inflate(inflater, container, false)
 
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
 
         binding.model = viewModel
 

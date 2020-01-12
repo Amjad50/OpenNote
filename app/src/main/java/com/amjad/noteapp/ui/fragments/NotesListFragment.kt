@@ -16,6 +16,13 @@ import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 class NotesListFragment : Fragment() {
     private lateinit var viewModel: NoteViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = activity?.run {
+            ViewModelProviders.of(this)[NoteViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,13 +47,6 @@ class NotesListFragment : Fragment() {
 
     private fun observersInit(adapter: NotesListAdapter) {
         viewModel.allNotes.observe(this, Observer { notes -> adapter.submitList(notes) })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = activity?.run {
-            ViewModelProviders.of(this)[NoteViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
     }
 
 }
