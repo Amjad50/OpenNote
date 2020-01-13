@@ -18,4 +18,8 @@ class NotesRepository(private val noteDao: NoteDao) {
     suspend fun updateNote(note: Note) {
         noteDao.updateNote(note)
     }
+
+    suspend fun deleteNotes(notesIds: List<Int>) {
+        noteDao.deleteNotes(notesIds)
+    }
 }
