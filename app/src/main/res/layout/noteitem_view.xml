@@ -4,6 +4,9 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.graphics.Color" />
+
         <variable
                 name="onNoteClick"
                 type="android.view.View.OnClickListener" />
@@ -11,13 +14,19 @@
         <variable
                 name="noteTitle"
                 type="String" />
+
+        <variable
+                name="selected"
+                type="Boolean" />
     </data>
 
     <!--    TODO: add ripple effect-->
+    <!--    TODO: edit the selection colors and style-->
     <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:background='@{selected ? Color.BLACK : Color.WHITE}'
             android:onClick="@{onNoteClick}"
             app:cardCornerRadius="6dp"
             app:cardElevation="2dp"
