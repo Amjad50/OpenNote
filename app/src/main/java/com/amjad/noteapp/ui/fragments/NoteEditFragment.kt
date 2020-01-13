@@ -48,7 +48,8 @@ class NoteEditFragment : Fragment() {
             newNote.id = args.noteId
             viewModel.updateNote(newNote)
         } else {
-            viewModel.insert(newNote)
+            if (!(newNote.title.isNullOrEmpty() && newNote.note.isNullOrEmpty()))
+                viewModel.insert(newNote)
         }
     }
 
