@@ -26,7 +26,7 @@
             tools:layout="@layout/note_edit_fragment">
         <argument
                 android:name="noteId"
-                android:defaultValue="-1"
-                app:argType="integer" />
+                android:defaultValue="-1L"
+                app:argType="long" />
     </fragment>
 </navigation>

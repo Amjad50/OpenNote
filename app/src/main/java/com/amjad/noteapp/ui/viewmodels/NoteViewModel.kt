@@ -12,7 +12,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: NotesRepository
 
     val allNotes: LiveData<List<Note>>
-    private val selectedNote = MutableLiveData<Int>()
+    private val selectedNote = MutableLiveData<Long>()
     val note: LiveData<Note>
 
     init {
@@ -26,7 +26,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         repository.insert(note)
     }
 
-    fun setNoteID(id: Int) {
+    fun setNoteID(id: Long) {
         selectedNote.value = id
     }
 
@@ -34,7 +34,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         repository.updateNote(note)
     }
 
-    fun deleteNotes(notesIds: List<Int>) = viewModelScope.launch {
+    fun deleteNotes(notesIds: List<Long>) = viewModelScope.launch {
         repository.deleteNotes(notesIds)
     }
 

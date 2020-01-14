@@ -10,7 +10,7 @@ interface NoteDao {
 
 
     @Query("SELECT * FROM note_table WHERE id = :id")
-    fun getNote(id: Int): LiveData<Note>
+    fun getNote(id: Long): LiveData<Note>
 
     @Update
     suspend fun updateNote(note: Note)
@@ -25,5 +25,5 @@ interface NoteDao {
     suspend fun deleteNote(note: Note)
 
     @Query("DELETE FROM note_table WHERE id in (:notesIds)")
-    suspend fun deleteNotes(notesIds: List<Int>)
+    suspend fun deleteNotes(notesIds: List<Long>)
 }

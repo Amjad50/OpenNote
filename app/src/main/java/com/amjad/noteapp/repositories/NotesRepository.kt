@@ -11,7 +11,7 @@ class NotesRepository(private val noteDao: NoteDao) {
         noteDao.insert(note)
     }
 
-    fun getNote(id: Int): LiveData<Note> {
+    fun getNote(id: Long): LiveData<Note> {
         return noteDao.getNote(id)
     }
 
@@ -19,7 +19,7 @@ class NotesRepository(private val noteDao: NoteDao) {
         noteDao.updateNote(note)
     }
 
-    suspend fun deleteNotes(notesIds: List<Int>) {
+    suspend fun deleteNotes(notesIds: List<Long>) {
         noteDao.deleteNotes(notesIds)
     }
 }

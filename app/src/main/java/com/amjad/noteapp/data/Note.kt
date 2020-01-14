@@ -10,6 +10,6 @@ data class Note(
     val note: String?,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int = 0
+    var id: Long = 0
 )
 

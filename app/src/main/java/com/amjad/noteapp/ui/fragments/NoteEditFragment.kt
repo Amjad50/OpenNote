@@ -13,7 +13,7 @@ import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
 class NoteEditFragment : Fragment() {
 
-    val args: NoteEditFragmentArgs by navArgs()
+    private val args: NoteEditFragmentArgs by navArgs()
 
     private lateinit var viewModel: NoteViewModel
     private lateinit var binding: NoteEditFragmentBinding
@@ -44,7 +44,7 @@ class NoteEditFragment : Fragment() {
         val newNote = Note(binding.titleEdit.text.toString(), binding.noteEdit.text.toString())
 
         // no id sent mean that this is a new note
-        if (args.noteId != -1) {
+        if (args.noteId != -1L) {
             newNote.id = args.noteId
             viewModel.updateNote(newNote)
         } else {

@@ -94,14 +94,14 @@ class NotesListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.menu_delete_action -> {
-                    viewModel.deleteNotes(tracker.selection.map { it.toInt() }.toList())
+                    viewModel.deleteNotes(tracker.selection.map { it }.toList())
                     mode.finish()
                     return true
                 }
                 R.id.menu_selectall_action -> {
                     // used viewModel to get the Ids for all notes
                     viewModel.allNotes.value?.apply {
-                        tracker.setItemsSelected(this.map { it.id.toLong() }, true)
+                        tracker.setItemsSelected(this.map { it.id }, true)
                     }
                 }
             }

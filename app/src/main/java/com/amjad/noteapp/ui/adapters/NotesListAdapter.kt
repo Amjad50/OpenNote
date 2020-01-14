@@ -12,7 +12,7 @@ import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.NoteitemViewBinding
 import com.amjad.noteapp.ui.fragments.NotesListFragmentDirections
 
-class NotesListAdapter() :
+class NotesListAdapter :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(_NoteListDiffItemCallBack()) {
 
     var tracker: SelectionTracker<Long>? = null
@@ -21,7 +21,7 @@ class NotesListAdapter() :
         setHasStableIds(true)
     }
 
-    override fun getItemId(position: Int): Long = getItem(position).id.toLong()
+    override fun getItemId(position: Int): Long = getItem(position).id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(
