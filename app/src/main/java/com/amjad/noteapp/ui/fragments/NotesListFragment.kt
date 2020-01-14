@@ -68,6 +68,8 @@ class NotesListFragment : Fragment() {
                         null -> actionMode = activity?.startActionMode(actionModeCallback)
                         else -> actionMode?.title = tracker.selection.size().toString()
                     }
+                } else {
+                    actionMode?.finish()
                 }
             }
         })
