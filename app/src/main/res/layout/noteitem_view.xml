@@ -21,18 +21,18 @@
     </data>
 
     <!--    TODO: add ripple effect-->
-    <!--    TODO: edit the selection colors and style-->
     <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:background='@{selected ? Color.BLACK : Color.WHITE}'
             android:onClick="@{onNoteClick}"
             app:cardCornerRadius="6dp"
             app:cardElevation="2dp"
             app:cardPreventCornerOverlap="false"
             app:contentPadding="8dp"
-            app:rippleColor="@color/colorAccent">
+            app:rippleColor="@color/colorAccent"
+            app:strokeColor='@{selected ? Color.BLACK : 0x0}'
+            app:strokeWidth="2dp">
 
         <TextView
                 android:id="@+id/note_text"
