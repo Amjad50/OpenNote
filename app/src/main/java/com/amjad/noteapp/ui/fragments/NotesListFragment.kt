@@ -18,6 +18,7 @@ import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 class NotesListFragment : Fragment() {
     private lateinit var viewModel: NoteViewModel
     private lateinit var tracker: SelectionTracker<Long>
+    private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,14 +38,7 @@ class NotesListFragment : Fragment() {
         binding.noteslistview.adapter = adapter
 
         // tracker must be initialized after the adapter has been assigned to the recyclerview element
-        tracker =
-            SelectionTracker.Builder<Long>(
-                NotesListAdapter.SELECTION_ID,
-                binding.noteslistview,
-                NoteItemKeyProvider(binding.noteslistview),
-                NoteItemDetailsLookup(binding.noteslistview),
-                StorageStrategy.createLongStorage()
-            ).build()
+        setupTracker(binding)
 
         adapter.tracker = tracker
 
@@ -57,32 +51,32 @@ class NotesListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.note_list_fragment_menu, menu)
+    private fun setupTracker(binding: NotesListFragmentBinding) {
+        tracker =
+            SelectionTracker.Builder<Long>(
+                NotesListAdapter.SELECTION_ID,
+                binding.noteslistview,
+                NoteItemKeyProvider(binding.noteslistview),
+                NoteItemDetailsLookup(binding.noteslistview),
+                StorageStrategy.createLongStorage()
+            ).build()
 
-        // if any is selected, show the delete button
         tracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
             override fun onSelectionChanged() {
-                if (!tracker.hasSelection()) {
-                    if (menu.findItem(R.id.menu_delete_action).isVisible)
-                        menu.findItem(R.id.menu_delete_action).isVisible = false
-                } else {
-                    if (!menu.findItem(R.id.menu_delete_action).isVisible)
-                        menu.findItem(R.id.menu_delete_action).isVisible = true
+                if (tracker.hasSelection()) {
+                    when (actionMode) {
+                        null -> actionMode = activity?.startActionMode(actionModeCallback)
+                        else -> actionMode?.title = tracker.selection.size().toString()
+                    }
                 }
             }
         })
-
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_delete_action) {
-            viewModel.deleteNotes(tracker.selection.map { it.toInt() }.toList())
-            tracker.clearSelection()
-        }
-
-        return super.onOptionsItemSelected(item)
+    override fun onPause() {
+        // don't carry the actionMode to the EditNote fragment
+        actionMode?.finish()
+        super.onPause()
     }
 
     private fun openNewNote() {
@@ -94,6 +88,31 @@ class NotesListFragment : Fragment() {
 
     private fun observersInit(adapter: NotesListAdapter) {
         viewModel.allNotes.observe(this, Observer { notes -> adapter.submitList(notes) })
+    }
+
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            if (item.itemId == R.id.menu_delete_action) {
+                viewModel.deleteNotes(tracker.selection.map { it.toInt() }.toList())
+                mode.finish()
+                return true
+            }
+            return false
+        }
+
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            mode.menuInflater.inflate(R.menu.note_list_fragment_menu, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+            return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode) {
+            tracker.clearSelection()
+            actionMode = null
+        }
     }
 
 }
