@@ -16,4 +16,5 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     </string>
     <string name="menu_delete">delete</string>
     <string name="note_list_fragment_label">Notes</string>
+    <string name="menu_selectall">Select All</string>
 </resources>

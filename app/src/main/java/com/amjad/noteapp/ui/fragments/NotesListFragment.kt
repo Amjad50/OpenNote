@@ -92,10 +92,18 @@ class NotesListFragment : Fragment() {
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            if (item.itemId == R.id.menu_delete_action) {
-                viewModel.deleteNotes(tracker.selection.map { it.toInt() }.toList())
-                mode.finish()
-                return true
+            when (item.itemId) {
+                R.id.menu_delete_action -> {
+                    viewModel.deleteNotes(tracker.selection.map { it.toInt() }.toList())
+                    mode.finish()
+                    return true
+                }
+                R.id.menu_selectall_action -> {
+                    // used viewModel to get the Ids for all notes
+                    viewModel.allNotes.value?.apply {
+                        tracker.setItemsSelected(this.map { it.id.toLong() }, true)
+                    }
+                }
             }
             return false
         }
