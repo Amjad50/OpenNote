@@ -15,4 +15,5 @@ Duis lectus justo, semper in justo id, consectetur elementum lacus. Sed efficitu
 Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque dignissim a nisl in tincidunt. Aliquam a porta justo, sed ullamcorper ligula. Aliquam erat volutpat. Nullam rhoncus augue id massa hendrerit, sit amet porttitor lacus feugiat. Sed tincidunt mauris sed lacinia tempus. Phasellus sollicitudin congue arcu, sit amet faucibus ligula auctor eget. Sed tempus consequat diam a interdum. Nullam vehicula euismod ligula in pulvinar. Integer vel turpis id massa eleifend posuere in sed dui.
     </string>
     <string name="menu_delete">delete</string>
+    <string name="note_list_fragment_label">Notes</string>
 </resources>

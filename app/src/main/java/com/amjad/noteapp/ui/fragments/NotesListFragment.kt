@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.amjad.noteapp.R
-import com.amjad.noteapp.databinding.NoteslistFragmentBinding
+import com.amjad.noteapp.databinding.NotesListFragmentBinding
 import com.amjad.noteapp.ui.adapters.NoteItemDetailsLookup
 import com.amjad.noteapp.ui.adapters.NoteItemKeyProvider
 import com.amjad.noteapp.ui.adapters.NotesListAdapter
@@ -31,7 +31,7 @@ class NotesListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = NoteslistFragmentBinding.inflate(inflater, container, false)
+        val binding = NotesListFragmentBinding.inflate(inflater, container, false)
 
         val adapter = NotesListAdapter()
         binding.noteslistview.adapter = adapter

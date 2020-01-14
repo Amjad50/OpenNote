@@ -3,30 +3,30 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/nav_graph"
-        app:startDestination="@id/mainFragment">
+        app:startDestination="@id/note_list_fragment">
 
     <fragment
-            android:id="@+id/mainFragment"
+            android:id="@+id/note_list_fragment"
             android:name="com.amjad.noteapp.ui.fragments.NotesListFragment"
-            android:label="MainFragment"
-            tools:layout="@layout/noteslist_fragment">
+            android:label="@string/note_list_fragment_label"
+            tools:layout="@layout/notes_list_fragment">
 
         <action
                 android:id="@+id/action_mainFragment_to_noteEditFragment"
-                app:destination="@id/noteEditFragment"
+                app:destination="@id/note_edit_fragment"
                 app:enterAnim="@anim/nav_default_enter_anim"
                 app:exitAnim="@anim/nav_default_exit_anim"
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"
-                app:popUpTo="@+id/mainFragment" />
+                app:popUpTo="@+id/note_list_fragment" />
     </fragment>
     <fragment
-            android:id="@+id/noteEditFragment"
+            android:id="@+id/note_edit_fragment"
             android:name="com.amjad.noteapp.ui.fragments.NoteEditFragment"
-            android:label="NoteEditFragment">
+            tools:layout="@layout/note_edit_fragment">
         <argument
-                app:argType="integer"
                 android:name="noteId"
-                android:defaultValue="-1" />
+                android:defaultValue="-1"
+                app:argType="integer" />
     </fragment>
 </navigation>

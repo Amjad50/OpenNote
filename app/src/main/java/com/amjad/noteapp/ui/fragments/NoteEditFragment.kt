@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import com.amjad.noteapp.data.Note
-import com.amjad.noteapp.databinding.FragmentNoteEditBinding
+import com.amjad.noteapp.databinding.NoteEditFragmentBinding
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
 class NoteEditFragment : Fragment() {
@@ -16,7 +16,7 @@ class NoteEditFragment : Fragment() {
     val args: NoteEditFragmentArgs by navArgs()
 
     private lateinit var viewModel: NoteViewModel
-    private lateinit var binding: FragmentNoteEditBinding
+    private lateinit var binding: NoteEditFragmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class NoteEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNoteEditBinding.inflate(inflater, container, false)
+        binding = NoteEditFragmentBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
 
