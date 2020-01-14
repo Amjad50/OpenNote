@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host)
         setupActionBarWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             // overrides the actionbar title on these fragments/destinations
             if (destination.id == R.id.note_edit_fragment) {
                 supportActionBar?.title = null
