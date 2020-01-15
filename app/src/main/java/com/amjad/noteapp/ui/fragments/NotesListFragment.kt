@@ -6,18 +6,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StorageStrategy
 import com.amjad.noteapp.R
 import com.amjad.noteapp.databinding.NotesListFragmentBinding
-import com.amjad.noteapp.ui.adapters.NoteItemDetailsLookup
-import com.amjad.noteapp.ui.adapters.NoteItemKeyProvider
+import com.amjad.noteapp.ui.adapters.NoteListSelector
 import com.amjad.noteapp.ui.adapters.NotesListAdapter
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
 class NotesListFragment : Fragment() {
     private lateinit var viewModel: NoteViewModel
-    private lateinit var tracker: SelectionTracker<Long>
+    private lateinit var adapter: NotesListAdapter
     private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +31,10 @@ class NotesListFragment : Fragment() {
     ): View {
         val binding = NotesListFragmentBinding.inflate(inflater, container, false)
 
-        val adapter = NotesListAdapter()
+        adapter = NotesListAdapter()
         binding.noteslistview.adapter = adapter
 
-        // tracker must be initialized after the adapter has been assigned to the recyclerview element
-        setupTracker(binding)
-
-        adapter.tracker = tracker
+        setupSelectorObservers(adapter.selector)
 
         observersInit(adapter)
 
@@ -51,28 +45,17 @@ class NotesListFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupTracker(binding: NotesListFragmentBinding) {
-        tracker =
-            SelectionTracker.Builder<Long>(
-                NotesListAdapter.SELECTION_ID,
-                binding.noteslistview,
-                NoteItemKeyProvider(binding.noteslistview),
-                NoteItemDetailsLookup(binding.noteslistview),
-                StorageStrategy.createLongStorage()
-            ).build()
-
-        tracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
-            override fun onSelectionChanged() {
-                if (tracker.hasSelection()) {
-                    when (actionMode) {
-                        null -> actionMode = activity?.startActionMode(actionModeCallback)
-                        else -> actionMode?.title = tracker.selection.size().toString()
-                    }
-                } else {
-                    actionMode?.finish()
+    private fun setupSelectorObservers(selector: NoteListSelector<Long>) {
+        selector.addChangeObserver {
+            if (selector.hasSelection()) {
+                if (actionMode == null) {
+                    actionMode = activity?.startActionMode(actionModeCallback)
                 }
+                actionMode?.title = selector.selection.size.toString()
+            } else {
+                actionMode?.finish()
             }
-        })
+        }
     }
 
     override fun onPause() {
@@ -96,14 +79,14 @@ class NotesListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.menu_delete_action -> {
-                    viewModel.deleteNotes(tracker.selection.map { it }.toList())
+                    viewModel.deleteNotes(adapter.selector.selection.map { it }.toList())
                     mode.finish()
                     return true
                 }
                 R.id.menu_selectall_action -> {
                     // used viewModel to get the Ids for all notes
                     viewModel.allNotes.value?.apply {
-                        tracker.setItemsSelected(this.map { it.id }, true)
+                        adapter.selector.setItemsSelection(this.map { it.id }, true)
                     }
                 }
             }
@@ -120,8 +103,8 @@ class NotesListFragment : Fragment() {
         }
 
         override fun onDestroyActionMode(mode: ActionMode) {
-            tracker.clearSelection()
             actionMode = null
+            adapter.selector.clearSelection()
         }
     }
 

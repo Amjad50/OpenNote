@@ -3,8 +3,6 @@ package com.amjad.noteapp.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,10 +13,14 @@ import com.amjad.noteapp.ui.fragments.NotesListFragmentDirections
 class NotesListAdapter :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(_NoteListDiffItemCallBack()) {
 
-    var tracker: SelectionTracker<Long>? = null
+    val selector = NoteListSelector<Long>()
 
     init {
         setHasStableIds(true)
+        selector.addChangeObserver {
+            // TODO: change to better update (performance)
+            notifyDataSetChanged()
+        }
     }
 
     override fun getItemId(position: Int): Long = getItem(position).id
@@ -34,35 +36,39 @@ class NotesListAdapter :
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        holder.bind(getItem(position), tracker?.isSelected(getItemId(position)) ?: false)
+        holder.bind(getItem(position))
     }
 
-    class NoteViewHolder(private val binding: NoteitemViewBinding) :
+    inner class NoteViewHolder(private val binding: NoteitemViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(note: Note, isSelected: Boolean) {
+        fun bind(note: Note) {
+            selector
             binding.apply {
                 this.note = note
-                selected = isSelected
+                selected = selector.isSelected(note.id)
                 setOnNoteClick {
-                    val action =
-                        NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(noteId = note.id)
-                    it.findNavController()
-                        .navigate(action)
+                    if (!selector.hasSelection()) {
+                        // open note for editing
+                        val action =
+                            NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(noteId = note.id)
+                        it.findNavController()
+                            .navigate(action)
+                    } else {
+                        selector.toggle(note.id)
+                    }
+                }
+                binding.noteViewCard.setOnLongClickListener {
+                    if (!selector.hasSelection()) {
+                        selector.select(note.id)
+                    } else {
+                        // TODO: change to preview the note and preserve the selection
+                        selector.toggle(note.id)
+                    }
+                    true
                 }
                 executePendingBindings()
             }
         }
-
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
-            object : ItemDetailsLookup.ItemDetails<Long>() {
-                override fun getSelectionKey(): Long = itemId
-                override fun getPosition(): Int = adapterPosition
-            }
-
-    }
-
-    companion object {
-        const val SELECTION_ID: String = "note_selection"
     }
 }
 
