@@ -41,7 +41,7 @@ class NotesListAdapter :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note, isSelected: Boolean) {
             binding.apply {
-                noteTitle = note.title
+                this.note = note
                 selected = isSelected
                 setOnNoteClick {
                     val action =

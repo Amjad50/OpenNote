@@ -7,13 +7,15 @@
 
         <import type="android.graphics.Color" />
 
+        <import type="android.view.View" />
+
         <variable
                 name="onNoteClick"
                 type="android.view.View.OnClickListener" />
 
         <variable
-                name="noteTitle"
-                type="String" />
+                name="note"
+                type="com.amjad.noteapp.data.Note" />
 
         <variable
                 name="selected"
@@ -34,11 +36,34 @@
             app:strokeColor='@{selected ? Color.BLACK : 0x0}'
             app:strokeWidth="2dp">
 
-        <TextView
-                android:id="@+id/note_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{noteTitle}"
-                tools:text="Note Title" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/note_title_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{note.title}"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="@{note.title.empty ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Note title" />
+
+            <TextView
+                    android:id="@+id/note_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="5"
+                    android:text="@{note.note}"
+                    android:visibility="@{note.note.empty ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/note_title_view"
+
+                    tools:text="Note text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
