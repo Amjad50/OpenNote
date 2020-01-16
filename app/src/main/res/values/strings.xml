@@ -20,4 +20,5 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="empty_noteslist_message">So Empty!</string>
     <string name="sad_image_description">sad face</string>
     <string name="undo">UNDO</string>
+    <string name="search">Search</string>
 </resources>

@@ -2,6 +2,8 @@ package com.amjad.noteapp.ui.fragments
 
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -61,10 +63,10 @@ class NotesListFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        // don't carry the actionMode to the EditNote fragment
-        actionMode?.finish()
-        super.onPause()
+    private fun observersInit(adapter: NotesListAdapter) {
+        viewModel.filteredAllNotes.observe(this, Observer { notes ->
+            adapter.submitList(notes)
+        })
     }
 
     private fun openNewNote() {
@@ -74,8 +76,30 @@ class NotesListFragment : Fragment() {
             .navigate(action)
     }
 
-    private fun observersInit(adapter: NotesListAdapter) {
-        viewModel.allNotes.observe(this, Observer { notes -> adapter.submitList(notes) })
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.notes_list_menu, menu)
+
+        val searchAction = menu.findItem(R.id.menu_search_action)
+        val searchActionView = searchAction.actionView as SearchView
+
+        searchActionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean =
+                true
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setNotesListFilter(newText ?: "")
+                return true
+            }
+        })
+
+        // change the search icon on the keyboard, as we are doing on-time filtering
+        searchActionView.imeOptions = EditorInfo.IME_NULL
+    }
+
+    override fun onPause() {
+        // don't carry the actionMode to the EditNote fragment
+        actionMode?.finish()
+        super.onPause()
     }
 
     private val actionModeCallback = object : ActionMode.Callback {
@@ -95,8 +119,8 @@ class NotesListFragment : Fragment() {
                     return true
                 }
                 R.id.menu_selectall_action -> {
-                    // used viewModel to get the Ids for all notes
-                    viewModel.allNotes.value?.apply {
+                    // used viewModel to get the Ids for all notes (only shown now!)
+                    viewModel.filteredAllNotes.value?.apply {
                         adapter.selector.setItemsSelection(this.map { it.id }, true)
                     }
                 }
@@ -105,7 +129,7 @@ class NotesListFragment : Fragment() {
         }
 
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            mode.menuInflater.inflate(R.menu.note_list_fragment_menu, menu)
+            mode.menuInflater.inflate(R.menu.notes_list_selection_menu, menu)
             return true
         }
 
