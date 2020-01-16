@@ -18,15 +18,21 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val filter = MutableLiveData<String>("")
 
     val filteredAllNotes: LiveData<List<Note>>
-    val note: LiveData<Note>
+    val currentNote: LiveData<Note>
 
 
     init {
         val wordsDao = NoteDatabase.getDatabase(application).noteDao()
 
         repository = NotesRepository(wordsDao)
-        note = Transformations.switchMap(selectedNote) { id -> repository.getNote(id) }
         allNotes = repository.allNotes
+        currentNote = Transformations.switchMap(selectedNote) { id ->
+            Transformations.switchMap(allNotes) {
+                val selectedNote = MutableLiveData<Note>()
+                selectedNote.value = it.find { it.id == id }
+                selectedNote
+            }
+        }
 
         filteredAllNotes = Transformations.switchMap(filter) { filterString ->
             if (filterString.isNullOrEmpty())
