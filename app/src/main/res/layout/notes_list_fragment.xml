@@ -16,12 +16,12 @@
             android:layout_height="match_parent"
             tools:context=".ui.fragments.NotesListFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.amjad.noteapp.ui.views.EmptyStatableRecyclerView
                 android:id="@+id/noteslistview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:padding="10dp"
                 android:clipToPadding="false"
+                android:padding="10dp"
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +29,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:spanCount="2"
                 tools:listitem="@layout/noteitem_view" />
+
+        <include
+                android:id="@+id/empty_view"
+                layout="@layout/empty_noteslist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"

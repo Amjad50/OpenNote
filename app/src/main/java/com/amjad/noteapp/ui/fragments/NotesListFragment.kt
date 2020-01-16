@@ -33,6 +33,7 @@ class NotesListFragment : Fragment() {
 
         adapter = NotesListAdapter()
         binding.noteslistview.adapter = adapter
+        binding.noteslistview.emptyView = binding.emptyView
 
         setupSelectorObservers(adapter.selector)
 
