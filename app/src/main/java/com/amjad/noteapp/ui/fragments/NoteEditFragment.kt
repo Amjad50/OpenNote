@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.NoteEditFragmentBinding
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
+import java.util.*
 
 
 class NoteEditFragment : Fragment() {
@@ -57,7 +58,9 @@ class NoteEditFragment : Fragment() {
     }
 
     private fun saveNote() {
-        val newNote = Note(binding.titleEdit.text.toString(), binding.noteEdit.text.toString())
+        // TODO: dont change the date if value of note did not change: add diff comparator
+        val newNote =
+            Note(binding.titleEdit.text.toString(), binding.noteEdit.text.toString(), Date())
 
         // no id sent mean that this is a new note
         if (args.noteId != NEW_NOTE_ID) {
