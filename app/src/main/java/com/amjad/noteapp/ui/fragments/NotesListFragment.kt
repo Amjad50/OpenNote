@@ -99,6 +99,8 @@ class NotesListFragment : Fragment() {
     override fun onPause() {
         // don't carry the actionMode to the EditNote fragment
         actionMode?.finish()
+        // reset the filter
+        viewModel.setNotesListFilter("")
         super.onPause()
     }
 
