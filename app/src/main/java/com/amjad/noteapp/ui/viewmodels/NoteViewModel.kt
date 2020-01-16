@@ -15,6 +15,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val selectedNote = MutableLiveData<Long>()
     val note: LiveData<Note>
 
+    private val toBeSaved = mutableListOf<Note>()
+
     init {
         val wordsDao = NoteDatabase.getDatabase(application).noteDao()
         repository = NotesRepository(wordsDao)
@@ -35,7 +37,18 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun deleteNotes(notesIds: List<Long>) = viewModelScope.launch {
+        toBeSaved.clear()
+        allNotes.value?.also {
+            toBeSaved.addAll(it.filter { notesIds.contains(it.id) })
+        }
         repository.deleteNotes(notesIds)
+    }
+
+    fun undeleteNotes() = viewModelScope.launch {
+        toBeSaved.forEach {
+            repository.insert(it)
+        }
+        toBeSaved.clear()
     }
 
 }

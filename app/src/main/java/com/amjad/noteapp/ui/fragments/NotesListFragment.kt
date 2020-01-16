@@ -11,8 +11,10 @@ import com.amjad.noteapp.databinding.NotesListFragmentBinding
 import com.amjad.noteapp.ui.adapters.NoteListSelector
 import com.amjad.noteapp.ui.adapters.NotesListAdapter
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class NotesListFragment : Fragment() {
+    private lateinit var binding: NotesListFragmentBinding
     private lateinit var viewModel: NoteViewModel
     private lateinit var adapter: NotesListAdapter
     private var actionMode: ActionMode? = null
@@ -29,7 +31,7 @@ class NotesListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = NotesListFragmentBinding.inflate(inflater, container, false)
+        binding = NotesListFragmentBinding.inflate(inflater, container, false)
 
         adapter = NotesListAdapter()
         binding.noteslistview.adapter = adapter
@@ -81,6 +83,14 @@ class NotesListFragment : Fragment() {
             when (item.itemId) {
                 R.id.menu_delete_action -> {
                     viewModel.deleteNotes(adapter.selector.selection.map { it }.toList())
+                    Snackbar.make(
+                        binding.root,
+                        "deleted ${adapter.selector.selection.size} notes",
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(R.string.undo) {
+                            viewModel.undeleteNotes()
+                        }.show()
                     mode.finish()
                     return true
                 }
