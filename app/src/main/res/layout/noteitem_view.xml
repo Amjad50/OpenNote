@@ -44,26 +44,27 @@
 
             <TextView
                     android:id="@+id/note_title_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{note.title}"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:visibility="@{note.title.empty ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Note title" />
 
             <TextView
                     android:id="@+id/note_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:maxLines="5"
                     android:text="@{note.note}"
                     android:visibility="@{note.note.empty ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/note_title_view"
-
                     tools:text="Note text" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
