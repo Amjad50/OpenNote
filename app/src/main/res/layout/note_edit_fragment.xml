@@ -36,7 +36,7 @@
                         android:hint="@string/title_hint"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:text="@{model.currentNote.title}"
+                        android:text="@={model.currentNote.title}"
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
                         android:gravity="start|top"
                         android:hint="@string/note_hint"
                         android:inputType="textMultiLine"
-                        android:text="@{model.currentNote.note}"
+                        android:text="@={model.currentNote.note}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/title_edit" />

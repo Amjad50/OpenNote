@@ -70,7 +70,9 @@ class NotesListFragment : Fragment() {
     }
 
     private fun openNewNote() {
-        // not sending any id means that this is new note
+        // selecting the note from here in order to fix the bug of starting a new note
+        // each time the EditNote fragment is rebuilt.
+        viewModel.setNoteID(-1)
         val action = NotesListFragmentDirections.actionMainFragmentToNoteEditFragment()
         findNavController()
             .navigate(action)

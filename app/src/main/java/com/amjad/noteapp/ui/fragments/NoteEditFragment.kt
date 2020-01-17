@@ -10,10 +10,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
-import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.NoteEditFragmentBinding
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
-import java.util.*
 
 
 class NoteEditFragment : Fragment() {
@@ -43,8 +41,10 @@ class NoteEditFragment : Fragment() {
         // start editing right away if this is a new note
         if (args.noteId == NEW_NOTE_ID)
             requestFocusAndShowKeyboard(binding.noteEdit)
-
-        viewModel.setNoteID(args.noteId)
+        else
+        // only set the id on notes already exists,
+        // new notes are handlerd by NoteListFragment when creating a new note
+            viewModel.setNoteID(args.noteId)
 
         return binding.root
     }
@@ -59,22 +59,21 @@ class NoteEditFragment : Fragment() {
 
     private fun saveNote() {
         // TODO: dont change the date if value of note did not change: add diff comparator
-        val newNote =
-            Note(binding.titleEdit.text.toString(), binding.noteEdit.text.toString(), Date())
+        // ^ handle difference changes and date assignment
 
         // no id sent mean that this is a new note
-        if (args.noteId != NEW_NOTE_ID) {
-            newNote.id = args.noteId
-            viewModel.updateNote(newNote)
+        if (args.noteId == NEW_NOTE_ID) {
+            viewModel.insertCurrentNote()
         } else {
-            if (!(newNote.title.isNullOrEmpty() && newNote.note.isNullOrEmpty()))
-                viewModel.insert(newNote)
+            viewModel.updateCurrentNote()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        saveNote()
+        // only save if not changing configuration (rotating)
+        if (activity?.isChangingConfigurations != true)
+            saveNote()
 
         // hide the keyboard
         context?.also {

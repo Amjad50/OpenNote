@@ -8,16 +8,16 @@ import java.util.*
 
 @Entity(tableName = "note_table")
 data class Note(
-    val title: String?,
-    val note: String?,
-    val date: Date?,
+    var title: String = "",
+    var note: String = "",
+    var date: Date = Date(),
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Long = 0
 ) {
     fun getFormattedDate(): String {
         val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
-        return date?.let { dateFormat.format(it) } ?: ""
+        return date.let { dateFormat.format(it) } ?: ""
     }
 }
 

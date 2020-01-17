@@ -13,7 +13,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: NotesRepository
 
     private val allNotes: LiveData<List<Note>>
-    private val selectedNote = MutableLiveData<Long>()
+    private val selectedNoteID = MutableLiveData<Long>()
     private val toBeSaved = mutableListOf<Note>()
     private val filter = MutableLiveData<String>("")
 
@@ -26,11 +26,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
         repository = NotesRepository(wordsDao)
         allNotes = repository.allNotes
-        currentNote = Transformations.switchMap(selectedNote) { id ->
-            Transformations.switchMap(allNotes) {
-                val selectedNote = MutableLiveData<Note>()
-                selectedNote.value = it.find { it.id == id }
-                selectedNote
+        currentNote = Transformations.switchMap(selectedNoteID) { id ->
+            Transformations.map(allNotes) { notes ->
+                notes.find { note -> note.id == id } ?: Note()
             }
         }
 
@@ -38,31 +36,40 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             if (filterString.isNullOrEmpty())
                 allNotes
             else
-                Transformations.map(allNotes) {
-                    it.filter {
-                        it.title?.toLowerCase(Locale.getDefault())?.contains(filterString) ?: false ||
-                                it.note?.toLowerCase(Locale.getDefault())?.contains(filterString) ?: false
+                Transformations.map(allNotes) { notes ->
+                    notes.filter { note ->
+                        note.title.toLowerCase(Locale.getDefault()).contains(filterString) ||
+                                note.note.toLowerCase(Locale.getDefault()).contains(filterString)
                     }
                 }
         }
     }
 
-    fun insert(note: Note) = viewModelScope.launch {
-        repository.insert(note)
-    }
-
     fun setNoteID(id: Long) {
-        selectedNote.value = id
+        selectedNoteID.value = id
     }
 
-    fun updateNote(note: Note) = viewModelScope.launch {
-        repository.updateNote(note)
+    fun insertCurrentNote() = viewModelScope.launch {
+        currentNote.value?.let {
+            // update the time of inserting
+            it.date = Date()
+
+            if (!(it.title.isEmpty() && it.note.isEmpty()))
+                repository.insert(it)
+        }
+    }
+
+    fun updateCurrentNote() = viewModelScope.launch {
+        currentNote.value?.also {
+            it.date = Date()
+            repository.updateNote(it)
+        }
     }
 
     fun deleteNotes(notesIds: List<Long>) = viewModelScope.launch {
         toBeSaved.clear()
-        allNotes.value?.also {
-            toBeSaved.addAll(it.filter { notesIds.contains(it.id) })
+        allNotes.value?.also { notes ->
+            toBeSaved.addAll(notes.filter { note -> notesIds.contains(note.id) })
         }
         repository.deleteNotes(notesIds)
     }
