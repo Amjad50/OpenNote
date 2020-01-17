@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textAlignment">gravity</item>
         <item name="android:textDirection">firstStrongLtr</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close_x</item>
     </style>
 
 </resources>
