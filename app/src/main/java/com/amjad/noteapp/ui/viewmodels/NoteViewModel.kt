@@ -49,13 +49,15 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         selectedNoteID.value = id
     }
 
+    fun getSelectedNoteID(): Long = selectedNoteID.value ?: -1L
+
     fun insertCurrentNote() = viewModelScope.launch {
         currentNote.value?.let {
             // update the time of inserting
             it.date = Date()
 
             if (!(it.title.isEmpty() && it.note.isEmpty()))
-                repository.insert(it)
+                setNoteID(repository.insert(it))
         }
     }
 

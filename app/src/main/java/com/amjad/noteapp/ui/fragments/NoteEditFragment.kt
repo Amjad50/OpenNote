@@ -40,10 +40,13 @@ class NoteEditFragment : Fragment() {
 
         // start editing right away if this is a new note
         if (args.noteId == NEW_NOTE_ID)
+        // FIXME: when closing and reopening the app (or rotating) when editing, selectedNoteId is
+        //  changed from -1 but this statement is executed, which would focus on the beginning of
+        //  the line, which is not good.
             requestFocusAndShowKeyboard(binding.noteEdit)
         else
         // only set the id on notes already exists,
-        // new notes are handlerd by NoteListFragment when creating a new note
+        // new notes are handled by NoteListFragment when creating a new note
             viewModel.setNoteID(args.noteId)
 
         return binding.root
@@ -59,10 +62,10 @@ class NoteEditFragment : Fragment() {
 
     private fun saveNote() {
         // TODO: dont change the date if value of note did not change: add diff comparator
-        // ^ handle difference changes and date assignment
+        //  handle difference changes and date assignment
 
         // no id sent mean that this is a new note
-        if (args.noteId == NEW_NOTE_ID) {
+        if (viewModel.getSelectedNoteID() == NEW_NOTE_ID) {
             viewModel.insertCurrentNote()
         } else {
             viewModel.updateCurrentNote()
@@ -71,9 +74,7 @@ class NoteEditFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        // only save if not changing configuration (rotating)
-        if (activity?.isChangingConfigurations != true)
-            saveNote()
+        saveNote()
 
         // hide the keyboard
         context?.also {
