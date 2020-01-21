@@ -3,8 +3,13 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     <item
             android:id="@+id/menu_delete_action"
-            android:icon="@drawable/delete_icon"
+            android:icon="@drawable/ic_delete"
             android:title="@string/menu_delete"
+            app:showAsAction="ifRoom" />
+    <item
+            android:id="@+id/menu_color_action"
+            android:icon="@drawable/ic_colors"
+            android:title="@string/menu_color"
             app:showAsAction="ifRoom" />
     <item
             android:id="@+id/menu_selectall_action"

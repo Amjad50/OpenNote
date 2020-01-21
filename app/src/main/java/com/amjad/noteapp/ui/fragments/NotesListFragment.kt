@@ -12,6 +12,7 @@ import com.amjad.noteapp.R
 import com.amjad.noteapp.databinding.NotesListFragmentBinding
 import com.amjad.noteapp.ui.adapters.NoteListSelector
 import com.amjad.noteapp.ui.adapters.NotesListAdapter
+import com.amjad.noteapp.ui.dialogs.ColorChooseDialog
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -110,7 +111,7 @@ class NotesListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.menu_delete_action -> {
-                    viewModel.deleteNotes(adapter.selector.selection.map { it }.toList())
+                    viewModel.deleteNotes(adapter.selector.selection.toList())
                     Snackbar.make(
                         binding.root,
                         "deleted ${adapter.selector.selection.size} notes",
@@ -121,6 +122,20 @@ class NotesListFragment : Fragment() {
                         }.show()
                     mode.finish()
                     return true
+                }
+                R.id.menu_color_action -> {
+                    fragmentManager?.also { fragmentManager ->
+                        ColorChooseDialog()
+                            .setOnColorClick { color ->
+                                viewModel.updateNotesColor(
+                                    adapter.selector.selection.toList(),
+                                    color
+                                )
+                                // on color choose will also close the dialog, so we clear
+                                // the selection.
+                                adapter.selector.clearSelection()
+                            }.show(fragmentManager, "ColorChooseDialog")
+                    }
                 }
                 R.id.menu_selectall_action -> {
                     // used viewModel to get the Ids for all notes (only shown now!)

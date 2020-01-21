@@ -11,15 +11,15 @@ class NotesRepository(private val noteDao: NoteDao) {
         return noteDao.insert(note)
     }
 
-    fun getNote(id: Long): LiveData<Note> {
-        return noteDao.getNote(id)
-    }
-
     suspend fun updateNote(note: Note) {
         noteDao.updateNote(note)
     }
 
     suspend fun deleteNotes(notesIds: List<Long>) {
         noteDao.deleteNotes(notesIds)
+    }
+
+    suspend fun updateNotesColor(notesIds: List<Long>, color: Int) {
+        noteDao.updateNotesColor(notesIds, color)
     }
 }

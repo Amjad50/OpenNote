@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+                name="onClick"
+                type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/note_color"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:dividerPadding="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteWhite"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteBlue"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteGreen"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteRed"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteGray"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/notePurple"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteYellow"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onClick}"
+                    app:backgroundTint="@color/noteOrange"
+                    app:elevation="2dp"
+                    app:useCompatPadding="true" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

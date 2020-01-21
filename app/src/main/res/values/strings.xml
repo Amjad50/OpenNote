@@ -21,4 +21,6 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="sad_image_description">sad face</string>
     <string name="undo">UNDO</string>
     <string name="search">Search</string>
+    <string name="menu_color">Select Color</string>
+    <string name="note_color">Note Color</string>
 </resources>
