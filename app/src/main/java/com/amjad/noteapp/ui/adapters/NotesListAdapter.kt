@@ -42,7 +42,6 @@ class NotesListAdapter :
     inner class NoteViewHolder(private val binding: NoteitemViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
-            selector
             binding.apply {
                 this.note = note
                 selected = selector.isSelected(note.id)
