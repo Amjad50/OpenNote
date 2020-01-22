@@ -1,17 +1,18 @@
 package com.amjad.noteapp.ui.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import com.amjad.noteapp.MainActivity
+import com.amjad.noteapp.R
 import com.amjad.noteapp.databinding.NoteEditFragmentBinding
+import com.amjad.noteapp.ui.dialogs.ColorChooseDialog
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
 
@@ -27,6 +28,8 @@ class NoteEditFragment : Fragment() {
         viewModel = activity?.run {
             ViewModelProviders.of(this)[NoteViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -86,6 +89,29 @@ class NoteEditFragment : Fragment() {
         context?.also {
             val inputMethodManager = getSystemService(it, InputMethodManager::class.java)
             inputMethodManager?.hideSoftInputFromWindow(binding.root.windowToken, 0)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.note_edit_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.edit_menu_color_action -> {
+                fragmentManager?.also { fragmentManager ->
+                    ColorChooseDialog().setOnColorClick { color ->
+                        viewModel.currentNote.value?.color = color
+
+                        // so we can update the value to the observers
+                        (viewModel.currentNote as MutableLiveData).run {
+                            value = value
+                        }
+                    }.show(fragmentManager, "ColorChooseDialogInEdit")
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

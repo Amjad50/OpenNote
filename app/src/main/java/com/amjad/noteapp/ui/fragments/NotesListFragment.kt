@@ -28,6 +28,8 @@ class NotesListFragment : Fragment() {
         viewModel = activity?.run {
             ViewModelProviders.of(this)[NoteViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
