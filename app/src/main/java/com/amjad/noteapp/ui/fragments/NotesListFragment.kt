@@ -112,9 +112,10 @@ class NotesListFragment : Fragment() {
             when (item.itemId) {
                 R.id.menu_delete_action -> {
                     viewModel.deleteNotes(adapter.selector.selection.toList())
+                    val selectionLen = adapter.selector.selection.size
                     Snackbar.make(
                         binding.root,
-                        "deleted ${adapter.selector.selection.size} notes",
+                        "Deleted $selectionLen note${if (selectionLen > 1) "s" else ""}",
                         Snackbar.LENGTH_LONG
                     )
                         .setAction(R.string.undo) {
