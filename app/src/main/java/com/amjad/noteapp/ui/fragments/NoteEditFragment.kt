@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
+import com.amjad.noteapp.MainActivity
 import com.amjad.noteapp.databinding.NoteEditFragmentBinding
 import com.amjad.noteapp.ui.viewmodels.NoteViewModel
 
@@ -48,6 +49,11 @@ class NoteEditFragment : Fragment() {
         // only set the id on notes already exists,
         // new notes are handled by NoteListFragment when creating a new note
             viewModel.setNoteID(args.noteId)
+
+        // remove the title from the actionBar
+        (activity as MainActivity?)?.run {
+            supportActionBar?.title = null
+        }
 
         return binding.root
     }
