@@ -3,7 +3,7 @@ package com.amjad.noteapp.ui.fragments
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -95,6 +95,22 @@ class NotesListFragment : Fragment() {
             }
         })
 
+        // increase the width of the actionView to cover as much as possible
+        searchActionView.maxWidth = Int.MAX_VALUE
+
+        // when calling expandActionView, the onQueryTextChange is called with an empty String
+        // which would reset the filter but also expand it (in empty state)
+        // that's why, I saved the current filter outside first then use it to submit a new
+        // query string
+
+        val currentFilter = viewModel.getNotesListFilter()
+
+        if (currentFilter.isNotEmpty()) {
+            searchAction.expandActionView()
+            searchActionView.setQuery(currentFilter, true)
+            searchActionView.clearFocus()
+        }
+
         // change the search icon on the keyboard, as we are doing on-time filtering
         searchActionView.imeOptions = EditorInfo.IME_NULL
     }
@@ -103,7 +119,6 @@ class NotesListFragment : Fragment() {
         // don't carry the actionMode to the EditNote fragment
         actionMode?.finish()
         // reset the filter
-        viewModel.setNotesListFilter("")
         super.onPause()
     }
 

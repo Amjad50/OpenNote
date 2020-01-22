@@ -87,6 +87,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         filter.value = newFilter.toLowerCase(Locale.getDefault())
     }
 
+    fun getNotesListFilter(): String =
+        filter.value ?: ""
+
     fun updateNotesColor(notesIds: List<Long>, color: Int) = viewModelScope.launch {
         repository.updateNotesColor(notesIds, color)
     }
