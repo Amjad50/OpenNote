@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.data.NoteDatabase
 import com.amjad.noteapp.repositories.NotesRepository
+import com.amjad.noteapp.ui.adapters.NoteListSelector
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -17,6 +18,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private val toBeSaved = mutableListOf<Note>()
     private val filter = MutableLiveData<String>("")
 
+    val selector = NoteListSelector<Long>()
     val filteredAllNotes: LiveData<List<Note>>
     val currentNote: LiveData<Note>
 

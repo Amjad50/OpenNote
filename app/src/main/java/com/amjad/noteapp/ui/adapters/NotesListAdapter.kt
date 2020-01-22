@@ -10,10 +10,8 @@ import com.amjad.noteapp.data.Note
 import com.amjad.noteapp.databinding.NoteitemViewBinding
 import com.amjad.noteapp.ui.fragments.NotesListFragmentDirections
 
-class NotesListAdapter :
+class NotesListAdapter(private val selector: NoteListSelector<Long>) :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(_NoteListDiffItemCallBack()) {
-
-    val selector = NoteListSelector<Long>()
 
     init {
         setHasStableIds(true)

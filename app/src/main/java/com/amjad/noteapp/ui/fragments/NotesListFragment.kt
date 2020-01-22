@@ -36,11 +36,11 @@ class NotesListFragment : Fragment() {
     ): View {
         binding = NotesListFragmentBinding.inflate(inflater, container, false)
 
-        adapter = NotesListAdapter()
+        adapter = NotesListAdapter(viewModel.selector)
         binding.noteslistview.adapter = adapter
         binding.noteslistview.emptyView = binding.emptyView
 
-        setupSelectorObservers(adapter.selector)
+        setupSelectorObservers(viewModel.selector)
 
         observersInit(adapter)
 
@@ -52,7 +52,7 @@ class NotesListFragment : Fragment() {
     }
 
     private fun setupSelectorObservers(selector: NoteListSelector<Long>) {
-        selector.addChangeObserver {
+        val changeHandler: () -> Unit = {
             if (selector.hasSelection()) {
                 if (actionMode == null) {
                     actionMode = activity?.startActionMode(actionModeCallback)
@@ -62,6 +62,11 @@ class NotesListFragment : Fragment() {
                 actionMode?.finish()
             }
         }
+
+        selector.addChangeObserver(changeHandler)
+
+        // call it to initiate the actionMode if needed (configuration changes happened)
+        changeHandler()
     }
 
     private fun observersInit(adapter: NotesListAdapter) {
@@ -71,6 +76,9 @@ class NotesListFragment : Fragment() {
     }
 
     private fun openNewNote() {
+        // before going to the new note, we clear the actionMode
+        actionMode?.finish()
+
         // selecting the note from here in order to fix the bug of starting a new note
         // each time the EditNote fragment is rebuilt.
         viewModel.setNoteID(-1)
@@ -115,19 +123,12 @@ class NotesListFragment : Fragment() {
         searchActionView.imeOptions = EditorInfo.IME_NULL
     }
 
-    override fun onPause() {
-        // don't carry the actionMode to the EditNote fragment
-        actionMode?.finish()
-        // reset the filter
-        super.onPause()
-    }
-
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.menu_delete_action -> {
-                    viewModel.deleteNotes(adapter.selector.selection.toList())
-                    val selectionLen = adapter.selector.selection.size
+                    viewModel.deleteNotes(viewModel.selector.selection.toList())
+                    val selectionLen = viewModel.selector.selection.size
                     Snackbar.make(
                         binding.root,
                         "Deleted $selectionLen note${if (selectionLen > 1) "s" else ""}",
@@ -144,19 +145,19 @@ class NotesListFragment : Fragment() {
                         ColorChooseDialog()
                             .setOnColorClick { color ->
                                 viewModel.updateNotesColor(
-                                    adapter.selector.selection.toList(),
+                                    viewModel.selector.selection.toList(),
                                     color
                                 )
                                 // on color choose will also close the dialog, so we clear
                                 // the selection.
-                                adapter.selector.clearSelection()
+                                viewModel.selector.clearSelection()
                             }.show(fragmentManager, "ColorChooseDialog")
                     }
                 }
                 R.id.menu_selectall_action -> {
                     // used viewModel to get the Ids for all notes (only shown now!)
                     viewModel.filteredAllNotes.value?.apply {
-                        adapter.selector.setItemsSelection(this.map { it.id }, true)
+                        viewModel.selector.setItemsSelection(this.map { it.id }, true)
                     }
                 }
             }
@@ -174,7 +175,7 @@ class NotesListFragment : Fragment() {
 
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
-            adapter.selector.clearSelection()
+            viewModel.selector.clearSelection()
         }
     }
 
