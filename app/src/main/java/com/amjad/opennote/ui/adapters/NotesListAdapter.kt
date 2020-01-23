@@ -11,7 +11,7 @@ import com.amjad.opennote.databinding.NoteitemViewBinding
 import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
 
 class NotesListAdapter(private val selector: NoteListSelector<Long>) :
-    ListAdapter<Note, NotesListAdapter.NoteViewHolder>(_NoteListDiffItemCallBack()) {
+    ListAdapter<Note, NotesListAdapter.NoteViewHolder>(NoteListDiffItemCallBack()) {
 
     init {
         setHasStableIds(true)
@@ -70,7 +70,7 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
 }
 
 
-private class _NoteListDiffItemCallBack : DiffUtil.ItemCallback<Note>() {
+private class NoteListDiffItemCallBack : DiffUtil.ItemCallback<Note>() {
     override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean =
         newItem.id == oldItem.id
 
