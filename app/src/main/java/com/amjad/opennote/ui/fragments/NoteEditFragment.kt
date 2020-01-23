@@ -13,21 +13,20 @@ import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
 import com.amjad.opennote.databinding.NoteEditFragmentBinding
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
-import com.amjad.opennote.ui.viewmodels.NoteViewModel
+import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
 
 
 class NoteEditFragment : Fragment() {
 
     private val args: NoteEditFragmentArgs by navArgs()
 
-    private lateinit var viewModel: NoteViewModel
+    private lateinit var viewModel: NoteEditViewModel
     private lateinit var binding: NoteEditFragmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = activity?.run {
-            ViewModelProviders.of(this)[NoteViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
+
+        viewModel = ViewModelProviders.of(this)[NoteEditViewModel::class.java]
 
         setHasOptionsMenu(true)
     }
@@ -42,23 +41,27 @@ class NoteEditFragment : Fragment() {
 
         binding.model = viewModel
 
-        // start editing right away if this is a new note
-        if (args.noteId == NEW_NOTE_ID)
-        // FIXME: when closing and reopening the app (or rotating) when editing, selectedNoteId is
-        //  changed from -1 but this statement is executed, which would focus on the beginning of
-        //  the line, which is not good.
-            requestFocusAndShowKeyboard(binding.noteEdit)
-        else
-        // only set the id on notes already exists,
-        // new notes are handled by NoteListFragment when creating a new note
+        // start editing right away if this is a new note and insert the note into the database
+        if (args.noteId == NEW_NOTE_ID) {
+            if (!viewModel.isNoteSelected) {
+                requestFocusAndShowKeyboard(binding.noteEdit)
+
+                viewModel.insertNewNote()
+            }
+        } else
+        // this might be redundant if the id was already set
             viewModel.setNoteID(args.noteId)
 
+        setupActionBar()
+
+        return binding.root
+    }
+
+    private fun setupActionBar() {
         // remove the title from the actionBar
         (activity as MainActivity?)?.run {
             supportActionBar?.title = null
         }
-
-        return binding.root
     }
 
     private fun requestFocusAndShowKeyboard(noteEdit: View) {
@@ -69,21 +72,8 @@ class NoteEditFragment : Fragment() {
             }
     }
 
-    private fun saveNote() {
-        // TODO: dont change the date if value of note did not change: add diff comparator
-        //  handle difference changes and date assignment
-
-        // no id sent mean that this is a new note
-        if (viewModel.getSelectedNoteID() == NEW_NOTE_ID) {
-            viewModel.insertCurrentNote()
-        } else {
-            viewModel.updateCurrentNote()
-        }
-    }
-
     override fun onStop() {
         super.onStop()
-        saveNote()
 
         // hide the keyboard
         context?.also {
@@ -101,10 +91,10 @@ class NoteEditFragment : Fragment() {
             R.id.edit_menu_color_action -> {
                 fragmentManager?.also { fragmentManager ->
                     ColorChooseDialog().setOnColorClick { color ->
-                        viewModel.currentNote.value?.color = color
+                        viewModel.note.value?.color = color
 
                         // so we can update the value to the observers
-                        (viewModel.currentNote as MutableLiveData).run {
+                        (viewModel.note as MutableLiveData).run {
                             value = value
                         }
                     }.show(fragmentManager, "ColorChooseDialogInEdit")

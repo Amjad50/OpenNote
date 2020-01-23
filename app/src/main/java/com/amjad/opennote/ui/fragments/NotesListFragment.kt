@@ -13,21 +13,19 @@ import com.amjad.opennote.databinding.NotesListFragmentBinding
 import com.amjad.opennote.ui.adapters.NoteListSelector
 import com.amjad.opennote.ui.adapters.NotesListAdapter
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
-import com.amjad.opennote.ui.viewmodels.NoteViewModel
+import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class NotesListFragment : Fragment() {
     private lateinit var binding: NotesListFragmentBinding
-    private lateinit var viewModel: NoteViewModel
+    private lateinit var viewModel: NoteListViewModel
     private lateinit var adapter: NotesListAdapter
     private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        viewModel = activity?.run {
-            ViewModelProviders.of(this)[NoteViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
+
+        viewModel = ViewModelProviders.of(this)[NoteListViewModel::class.java]
 
         setHasOptionsMenu(true)
     }
@@ -81,9 +79,6 @@ class NotesListFragment : Fragment() {
         // before going to the new note, we clear the actionMode
         actionMode?.finish()
 
-        // selecting the note from here in order to fix the bug of starting a new note
-        // each time the EditNote fragment is rebuilt.
-        viewModel.setNoteID(-1)
         val action = NotesListFragmentDirections.actionMainFragmentToNoteEditFragment()
         findNavController()
             .navigate(action)
@@ -137,7 +132,7 @@ class NotesListFragment : Fragment() {
                         Snackbar.LENGTH_LONG
                     )
                         .setAction(R.string.undo) {
-                            viewModel.undeleteNotes()
+                            viewModel.unDeleteNotes()
                         }.show()
                     mode.finish()
                     return true

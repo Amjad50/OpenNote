@@ -9,18 +9,16 @@ import com.amjad.opennote.ui.adapters.NoteListSelector
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(application: Application) : AndroidViewModel(application) {
+class NoteListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: NotesRepository
 
     private val allNotes: LiveData<List<Note>>
-    private val selectedNoteID = MutableLiveData<Long>()
     private val toBeSaved = mutableListOf<Note>()
     private val filter = MutableLiveData<String>("")
 
     val selector = NoteListSelector<Long>()
     val filteredAllNotes: LiveData<List<Note>>
-    val currentNote: LiveData<Note>
 
 
     init {
@@ -28,11 +26,6 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
         repository = NotesRepository(wordsDao)
         allNotes = repository.allNotes
-        currentNote = Transformations.switchMap(selectedNoteID) { id ->
-            Transformations.map(allNotes) { notes ->
-                notes.find { note -> note.id == id } ?: Note()
-            }
-        }
 
         filteredAllNotes = Transformations.switchMap(filter) { filterString ->
             if (filterString.isNullOrEmpty())
@@ -47,29 +40,6 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun setNoteID(id: Long) {
-        selectedNoteID.value = id
-    }
-
-    fun getSelectedNoteID(): Long = selectedNoteID.value ?: -1L
-
-    fun insertCurrentNote() = viewModelScope.launch {
-        currentNote.value?.let {
-            // update the time of inserting
-            it.date = Date()
-
-            if (!(it.title.isEmpty() && it.note.isEmpty()))
-                setNoteID(repository.insert(it))
-        }
-    }
-
-    fun updateCurrentNote() = viewModelScope.launch {
-        currentNote.value?.also {
-            it.date = Date()
-            repository.updateNote(it)
-        }
-    }
-
     fun deleteNotes(notesIds: List<Long>) = viewModelScope.launch {
         toBeSaved.clear()
         allNotes.value?.also { notes ->
@@ -78,7 +48,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         repository.deleteNotes(notesIds)
     }
 
-    fun undeleteNotes() = viewModelScope.launch {
+    fun unDeleteNotes() = viewModelScope.launch {
         toBeSaved.forEach {
             repository.insert(it)
         }
