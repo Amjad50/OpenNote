@@ -15,7 +15,7 @@
 
         <variable
                 name="note"
-                type="com.amjad.noteapp.data.Note" />
+                type="com.amjad.opennote.data.Note" />
 
         <variable
                 name="selected"

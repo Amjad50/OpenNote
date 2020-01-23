@@ -1,11 +1,11 @@
-package com.amjad.noteapp
+package com.amjad.opennote
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.amjad.noteapp.databinding.MainActivityBinding
+import com.amjad.opennote.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
 

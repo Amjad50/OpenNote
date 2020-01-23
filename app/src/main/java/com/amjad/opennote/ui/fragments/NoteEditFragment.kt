@@ -1,4 +1,4 @@
-package com.amjad.noteapp.ui.fragments
+package com.amjad.opennote.ui.fragments
 
 import android.os.Bundle
 import android.view.*
@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
-import com.amjad.noteapp.MainActivity
-import com.amjad.noteapp.R
-import com.amjad.noteapp.databinding.NoteEditFragmentBinding
-import com.amjad.noteapp.ui.dialogs.ColorChooseDialog
-import com.amjad.noteapp.ui.viewmodels.NoteViewModel
+import com.amjad.opennote.MainActivity
+import com.amjad.opennote.R
+import com.amjad.opennote.databinding.NoteEditFragmentBinding
+import com.amjad.opennote.ui.dialogs.ColorChooseDialog
+import com.amjad.opennote.ui.viewmodels.NoteViewModel
 
 
 class NoteEditFragment : Fragment() {

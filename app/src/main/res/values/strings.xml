@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NoteApp</string>
+    <string name="app_name">Open Note</string>
     <string name="title_hint">Title</string>
     <string name="note_hint">Note</string>
     <!--    Added to be used in testing and design-->

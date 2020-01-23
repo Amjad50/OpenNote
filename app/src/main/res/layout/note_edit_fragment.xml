@@ -7,7 +7,7 @@
 
         <variable
                 name="model"
-                type="com.amjad.noteapp.ui.viewmodels.NoteViewModel" />
+                type="com.amjad.opennote.ui.viewmodels.NoteViewModel" />
     </data>
 
     <LinearLayout

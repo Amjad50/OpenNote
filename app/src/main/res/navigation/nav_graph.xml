@@ -7,7 +7,7 @@
 
     <fragment
             android:id="@+id/note_list_fragment"
-            android:name="com.amjad.noteapp.ui.fragments.NotesListFragment"
+            android:name="com.amjad.opennote.ui.fragments.NotesListFragment"
             android:label="@string/note_list_fragment_label"
             tools:layout="@layout/notes_list_fragment">
 
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
             android:id="@+id/note_edit_fragment"
-            android:name="com.amjad.noteapp.ui.fragments.NoteEditFragment"
+            android:name="com.amjad.opennote.ui.fragments.NoteEditFragment"
             tools:layout="@layout/note_edit_fragment">
         <argument
                 android:name="noteId"

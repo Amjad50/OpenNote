@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             tools:context=".ui.fragments.NotesListFragment">
 
-        <com.amjad.noteapp.ui.views.EmptyStatableRecyclerView
+        <com.amjad.opennote.ui.views.EmptyStatableRecyclerView
                 android:id="@+id/noteslistview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

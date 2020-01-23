@@ -1,4 +1,4 @@
-package com.amjad.noteapp.ui.views
+package com.amjad.opennote.ui.views
 
 import android.content.Context
 import android.util.AttributeSet

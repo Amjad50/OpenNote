@@ -1,4 +1,4 @@
-package com.amjad.noteapp.ui.adapters
+package com.amjad.opennote.ui.adapters
 
 class NoteListSelector<T> {
 

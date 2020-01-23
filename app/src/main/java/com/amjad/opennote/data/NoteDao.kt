@@ -1,4 +1,4 @@
-package com.amjad.noteapp.data
+package com.amjad.opennote.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

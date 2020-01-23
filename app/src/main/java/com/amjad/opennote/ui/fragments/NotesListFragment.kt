@@ -1,4 +1,4 @@
-package com.amjad.noteapp.ui.fragments
+package com.amjad.opennote.ui.fragments
 
 import android.os.Bundle
 import android.view.*
@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.amjad.noteapp.R
-import com.amjad.noteapp.databinding.NotesListFragmentBinding
-import com.amjad.noteapp.ui.adapters.NoteListSelector
-import com.amjad.noteapp.ui.adapters.NotesListAdapter
-import com.amjad.noteapp.ui.dialogs.ColorChooseDialog
-import com.amjad.noteapp.ui.viewmodels.NoteViewModel
+import com.amjad.opennote.R
+import com.amjad.opennote.databinding.NotesListFragmentBinding
+import com.amjad.opennote.ui.adapters.NoteListSelector
+import com.amjad.opennote.ui.adapters.NotesListAdapter
+import com.amjad.opennote.ui.dialogs.ColorChooseDialog
+import com.amjad.opennote.ui.viewmodels.NoteViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class NotesListFragment : Fragment() {

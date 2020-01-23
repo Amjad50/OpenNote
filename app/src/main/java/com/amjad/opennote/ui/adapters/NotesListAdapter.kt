@@ -1,4 +1,4 @@
-package com.amjad.noteapp.ui.adapters
+package com.amjad.opennote.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,9 +6,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.amjad.noteapp.data.Note
-import com.amjad.noteapp.databinding.NoteitemViewBinding
-import com.amjad.noteapp.ui.fragments.NotesListFragmentDirections
+import com.amjad.opennote.data.Note
+import com.amjad.opennote.databinding.NoteitemViewBinding
+import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
 
 class NotesListAdapter(private val selector: NoteListSelector<Long>) :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(_NoteListDiffItemCallBack()) {

@@ -1,11 +1,11 @@
-package com.amjad.noteapp.ui.viewmodels
+package com.amjad.opennote.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.amjad.noteapp.data.Note
-import com.amjad.noteapp.data.NoteDatabase
-import com.amjad.noteapp.repositories.NotesRepository
-import com.amjad.noteapp.ui.adapters.NoteListSelector
+import com.amjad.opennote.data.Note
+import com.amjad.opennote.data.NoteDatabase
+import com.amjad.opennote.repositories.NotesRepository
+import com.amjad.opennote.ui.adapters.NoteListSelector
 import kotlinx.coroutines.launch
 import java.util.*
 
