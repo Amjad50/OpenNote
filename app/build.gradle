@@ -56,4 +56,5 @@ dependencies {
     implementation 'androidx.room:room-common:2.2.3'
     implementation 'androidx.room:room-ktx:2.2.3'
     kapt 'androidx.room:room-compiler:2.2.3'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
 }
