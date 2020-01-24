@@ -70,7 +70,7 @@ class NotesListFragment : Fragment() {
     }
 
     private fun observersInit(adapter: NotesListAdapter) {
-        viewModel.filteredAllNotes.observe(this, Observer { notes ->
+        viewModel.filteredAllNotes.observe(viewLifecycleOwner, Observer { notes ->
             adapter.submitList(notes)
         })
     }
@@ -138,7 +138,7 @@ class NotesListFragment : Fragment() {
                     return true
                 }
                 R.id.menu_color_action -> {
-                    fragmentManager?.also { fragmentManager ->
+                    parentFragmentManager.also { fragmentManager ->
                         ColorChooseDialog()
                             .setOnColorClick { color ->
                                 viewModel.updateNotesColor(

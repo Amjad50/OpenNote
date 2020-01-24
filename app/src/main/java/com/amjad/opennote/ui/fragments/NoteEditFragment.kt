@@ -89,7 +89,7 @@ class NoteEditFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.edit_menu_color_action -> {
-                fragmentManager?.also { fragmentManager ->
+                parentFragmentManager.also { fragmentManager ->
                     ColorChooseDialog().setOnColorClick { color ->
                         viewModel.note.value?.color = color
 
