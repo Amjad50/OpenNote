@@ -6,7 +6,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.amjad.opennote.data.Note
+import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.databinding.NoteitemViewBinding
 import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
 

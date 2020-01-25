@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amjad.opennote.data.Note
-import com.amjad.opennote.data.NoteDao
-import com.amjad.opennote.data.NoteDatabase
+import com.amjad.opennote.data.daos.NoteDao
+import com.amjad.opennote.data.databases.NoteDatabase
+import com.amjad.opennote.data.entities.Note
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals

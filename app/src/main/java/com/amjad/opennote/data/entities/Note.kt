@@ -1,4 +1,4 @@
-package com.amjad.opennote.data
+package com.amjad.opennote.data.entities
 
 import android.graphics.Color
 import androidx.room.ColumnInfo

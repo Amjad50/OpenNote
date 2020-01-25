@@ -1,4 +1,4 @@
-package com.amjad.opennote.data
+package com.amjad.opennote.data.converters
 
 import androidx.room.TypeConverter
 import java.util.*

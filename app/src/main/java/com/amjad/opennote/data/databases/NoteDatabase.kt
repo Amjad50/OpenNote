@@ -1,4 +1,4 @@
-package com.amjad.opennote.data
+package com.amjad.opennote.data.databases
 
 import android.content.Context
 import androidx.room.Database
@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.amjad.opennote.data.converters.DataConverters
+import com.amjad.opennote.data.daos.NoteDao
+import com.amjad.opennote.data.entities.Note
 
 @Database(entities = [Note::class], version = 2, exportSchema = false)
 @TypeConverters(DataConverters::class)
@@ -43,7 +46,8 @@ abstract class NoteDatabase : RoomDatabase() {
         }
 
         fun getDatabase(context: Context): NoteDatabase {
-            val tempInstance = INSTANCE
+            val tempInstance =
+                INSTANCE
             if (tempInstance != null) {
                 return tempInstance
             }

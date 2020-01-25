@@ -2,8 +2,8 @@ package com.amjad.opennote.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.amjad.opennote.data.Note
-import com.amjad.opennote.data.NoteDatabase
+import com.amjad.opennote.data.databases.NoteDatabase
+import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.repositories.NotesRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -1,7 +1,8 @@
-package com.amjad.opennote.data
+package com.amjad.opennote.data.daos
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.amjad.opennote.data.entities.Note
 
 @Dao
 interface NoteDao {

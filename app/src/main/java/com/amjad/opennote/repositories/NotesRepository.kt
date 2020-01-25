@@ -1,8 +1,8 @@
 package com.amjad.opennote.repositories
 
 import androidx.lifecycle.LiveData
-import com.amjad.opennote.data.Note
-import com.amjad.opennote.data.NoteDao
+import com.amjad.opennote.data.daos.NoteDao
+import com.amjad.opennote.data.entities.Note
 
 class NotesRepository(private val noteDao: NoteDao) {
     val allNotes: LiveData<List<Note>> = noteDao.getAllNotes()
