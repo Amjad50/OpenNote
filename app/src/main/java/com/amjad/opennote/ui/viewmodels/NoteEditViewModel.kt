@@ -15,6 +15,8 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
 
     private val selectedNoteID = MutableLiveData<Long>()
 
+    val oldStatusAndActionBarStyles = StatusAndActionBarStyles()
+
     val note: LiveData<Note>
 
     var isNoteSelected = false
@@ -62,5 +64,12 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
 
     override fun onCleared() {
         updateCurrentNote()
+    }
+
+    class StatusAndActionBarStyles {
+        var saved: Boolean = false
+        var background: Int = 0
+        var elevation: Float = 0f
+        var statusBarColor: Int = 0
     }
 }
