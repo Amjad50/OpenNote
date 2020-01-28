@@ -3,17 +3,26 @@ package com.amjad.opennote.data.entities
 import android.graphics.Color
 import java.util.*
 
-class CheckableListNote internal constructor(
-    type: NoteType,
-    title: String = "",
-    note: String = "",
-    date: Date? = null,
-    color: Int = Color.WHITE,
-    id: Long = 0
-) : Note(type, title, note, date, color, id) {
-
-    init {
+class CheckableListNote : Note {
+    constructor(
+        title: String = "",
+        note: String = "",
+        date: Date? = null,
+        color: Int = Color.WHITE,
+        id: Long = 0
+    ) : super(NoteType.CHECKABLE_LIST_NOTE, title, note, date, color, id) {
         populateNoteList(note)
+    }
+
+    constructor(
+        title: String = "",
+        noteList: List<Pair<String, Boolean>>,
+        date: Date? = null,
+        color: Int = Color.WHITE,
+        id: Long = 0
+    ) : super(NoteType.CHECKABLE_LIST_NOTE, title, "", date, color, id) {
+        this.noteList.addAll(noteList)
+        note = serializeNoteList()
     }
 
     val noteList = mutableListOf<Pair<String, Boolean>>()

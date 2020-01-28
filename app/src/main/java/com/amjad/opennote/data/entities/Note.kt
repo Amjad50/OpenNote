@@ -32,7 +32,6 @@ open class Note(
             throw IllegalArgumentException("To get CheckableListNote note.type must be CHECKABLE_LIST_NOTE")
 
         return CheckableListNote(
-            type,
             title,
             note,
             date,
