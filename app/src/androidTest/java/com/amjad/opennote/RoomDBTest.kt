@@ -12,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amjad.opennote.data.daos.NoteDao
 import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
+import com.amjad.opennote.data.entities.NoteType
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -102,6 +103,7 @@ class RoomDBTest {
 
     companion object {
         val TESTING_NOTE = Note(
+            NoteType.TEXT_NOTE,
             id = 0,
             title = "welcome",
             note = "hello",
