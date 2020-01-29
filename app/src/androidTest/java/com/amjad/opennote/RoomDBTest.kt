@@ -187,6 +187,40 @@ class RoomDBTest {
         }
     }
 
+    @Test
+    fun updateTextNote() {
+        var noteId = 0L
+        runBlocking {
+            noteId = noteDao.insert(Note(NoteType.TEXT_NOTE).getNoteObject())
+        }
+
+        val note = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
+
+        log("Note first time $note")
+
+        assertEquals(NoteType.TEXT_NOTE, note?.type)
+
+        note?.note = "welcome"
+        note?.title = "hi"
+
+        runBlocking {
+            note?.also {
+                noteDao.updateNote(it.getNoteObject())
+            }
+        }
+
+        val noteSecondTime = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
+
+        assertEquals(NoteType.TEXT_NOTE, noteSecondTime?.type)
+
+        log("Note second time (after update) $noteSecondTime")
+
+        assertEquals("welcome", noteSecondTime?.note)
+        assertEquals("hi", noteSecondTime?.title)
+
+        assertEquals(1L, noteSecondTime?.id)
+    }
+
     companion object {
         private const val LOG_TAG = "TESTING"
 

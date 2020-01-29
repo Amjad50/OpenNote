@@ -49,5 +49,9 @@ open class Note(
         else
             return this
     }
+
+    override fun toString(): String {
+        return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id)"
+    }
 }
 

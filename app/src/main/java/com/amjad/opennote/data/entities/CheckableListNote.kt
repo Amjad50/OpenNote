@@ -52,6 +52,10 @@ class CheckableListNote : Note {
         }
     }
 
+    override fun toString(): String {
+        return "CheckableListNote(type=$type, title='$title', noteList=$noteList, date=$date, color=$color, id=$id)"
+    }
+
     companion object {
         // this is the BEL character, which is not printable
         // which means that no (normal) user can type it.
