@@ -191,7 +191,7 @@ class RoomDBTest {
     fun updateTextNote() {
         var noteId = 0L
         runBlocking {
-            noteId = noteDao.insert(Note(NoteType.TEXT_NOTE).getNoteObject())
+            noteId = noteDao.insert(Note().getNoteObject())
         }
 
         val note = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
@@ -229,7 +229,6 @@ class RoomDBTest {
         }
 
         val TESTING_NOTE = Note(
-            NoteType.TEXT_NOTE,
             id = 0,
             title = "welcome",
             note = "hello",

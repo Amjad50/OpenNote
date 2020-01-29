@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
-import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.repositories.NotesRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,7 +47,7 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun insertNewNote() = viewModelScope.launch {
-        setNoteID(repository.insert(Note(NoteType.TEXT_NOTE, date = Date())))
+        setNoteID(repository.insert(Note(date = Date())))
     }
 
     fun updateCurrentNote() = GlobalScope.launch {

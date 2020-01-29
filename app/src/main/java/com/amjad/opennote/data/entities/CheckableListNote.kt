@@ -4,13 +4,18 @@ import android.graphics.Color
 import java.util.*
 
 class CheckableListNote : Note {
+
+    init {
+        type = NoteType.CHECKABLE_LIST_NOTE
+    }
+
     constructor(
         title: String = "",
         note: String = "",
         date: Date? = null,
         color: Int = Color.WHITE,
         id: Long = 0
-    ) : super(NoteType.CHECKABLE_LIST_NOTE, title, note, date, color, id) {
+    ) : super(title, note, date, color, id) {
         populateNoteList(note)
     }
 
@@ -20,7 +25,7 @@ class CheckableListNote : Note {
         date: Date? = null,
         color: Int = Color.WHITE,
         id: Long = 0
-    ) : super(NoteType.CHECKABLE_LIST_NOTE, title, "", date, color, id) {
+    ) : super(title, "", date, color, id) {
         this.noteList.addAll(noteList)
         note = serializeNoteList()
     }
