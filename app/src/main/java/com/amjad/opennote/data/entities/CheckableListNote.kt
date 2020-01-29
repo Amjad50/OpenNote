@@ -39,9 +39,10 @@ class CheckableListNote : Note {
 
     private fun populateNoteList(serializedNote: String) {
         noteList.clear()
-        noteList.addAll(serializedNote.split(SEPARATOR).map {
-            Pair(it.substring(1), it[0] == 'X')
-        })
+        if (serializedNote.isNotEmpty())
+            noteList.addAll(serializedNote.split(SEPARATOR).map {
+                Pair(it.substring(1), it[0] == 'X')
+            })
     }
 
     private fun serializeNoteList(): String {
