@@ -3,13 +3,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-                name="onNewNoteClick"
-                type="android.view.View.OnClickListener" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
             android:layout_width="match_parent"
@@ -41,16 +34,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:onClick="@{onNewNoteClick}"
-                android:src="@drawable/add_icon"
-                android:tint="#fff"
+        <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+                android:id="@+id/speedDialOverLay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:maxImageSize="45dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <com.leinardi.android.speeddial.SpeedDialView
+                android:id="@+id/speedDial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:sdExpansionMode="top"
+                app:sdMainFabClosedSrc="@drawable/ic_add"
+                app:sdMainFabOpenedSrc="@drawable/ic_create"
+                app:sdOverlayLayout="@id/speedDialOverLay"
+                app:sdUseReverseAnimationOnClose="true" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

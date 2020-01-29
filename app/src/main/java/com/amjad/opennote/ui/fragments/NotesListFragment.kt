@@ -3,6 +3,7 @@ package com.amjad.opennote.ui.fragments
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,6 +16,7 @@ import com.amjad.opennote.ui.adapters.NotesListAdapter
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.leinardi.android.speeddial.SpeedDialView
 
 class NotesListFragment : Fragment() {
     private lateinit var binding: NotesListFragmentBinding
@@ -44,11 +46,41 @@ class NotesListFragment : Fragment() {
 
         observersInit(adapter)
 
-        binding.setOnNewNoteClick {
-            openNewNote()
-        }
+        initSpeedDial(binding.speedDial)
 
         return binding.root
+    }
+
+    private fun initSpeedDial(speedDial: SpeedDialView) {
+
+        speedDial.inflate(R.menu.speed_dial_menu)
+
+        speedDial.setOnActionSelectedListener {
+            when (it.id) {
+                R.id.speed_dial_add_list_note -> {
+                    // TODO: implement to add new list note
+                    Toast.makeText(
+                        context,
+                        "list to be created, opening soon...",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    false
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+
+        speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
+            override fun onMainActionSelected(): Boolean {
+                openNewNote()
+                return false
+            }
+
+            override fun onToggleChanged(isOpen: Boolean) {}
+        })
+
     }
 
     private fun setupSelectorObservers(selector: NoteListSelector<Long>) {
