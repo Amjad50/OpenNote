@@ -16,8 +16,7 @@ import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.data.entities.NoteType
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -220,6 +219,144 @@ class RoomDBTest {
 
         assertEquals(1L, noteSecondTime?.id)
     }
+
+    @Test
+    fun updateTasksListSingleNote() {
+        var noteId = 0L
+        runBlocking {
+            noteId = noteDao.insert(CheckableListNote().getNoteObject())
+        }
+
+        val note = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
+
+        log("Note first time $note")
+
+        if (note !is CheckableListNote?) {
+            assertTrue(false)
+            return
+        }
+
+        note?.title = "hi"
+        note?.noteList?.add(Pair("welcome", false))
+        note?.noteList?.add(Pair("hello", true))
+        note?.noteList?.add(Pair("hi again", false))
+        note?.noteList?.add(Pair("thats cool", false))
+        note?.noteList?.add(Pair("test", true))
+
+        runBlocking {
+            note?.also {
+                noteDao.updateNote(it.getNoteObject())
+            }
+        }
+
+        val noteSecondTime = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
+
+        if (noteSecondTime !is CheckableListNote?) {
+            assertTrue(false)
+            return
+        }
+
+        log("Note second time (after update) $noteSecondTime")
+
+        assertEquals("hi", noteSecondTime?.title)
+        assertEquals(5, noteSecondTime?.noteList?.size)
+        assertEquals("welcome", noteSecondTime?.noteList?.get(0)?.first)
+        assertEquals("hello", noteSecondTime?.noteList?.get(1)?.first)
+        assertEquals("thats cool", noteSecondTime?.noteList?.get(3)?.first)
+        assertEquals("test", noteSecondTime?.noteList?.get(4)?.first)
+        assertEquals("hi again", noteSecondTime?.noteList?.get(2)?.first)
+
+        assertTrue(noteSecondTime?.noteList?.get(1)?.second!!)
+        assertTrue(noteSecondTime?.noteList?.get(4)?.second!!)
+        assertFalse(noteSecondTime?.noteList?.get(0)?.second!!)
+        assertFalse(noteSecondTime?.noteList?.get(2)?.second!!)
+        assertFalse(noteSecondTime?.noteList?.get(3)?.second!!)
+
+        assertEquals(1L, noteSecondTime?.id)
+
+
+        noteSecondTime?.noteList?.apply {
+            this[0] = this[0].copy(first = "welcome changed")
+            this[2] = this[2].copy(first = "hi again changed", second = true)
+            this[3] = this[3].copy(second = true)
+        }
+
+        runBlocking {
+            noteSecondTime?.also {
+                noteDao.updateNote(it.getNoteObject())
+            }
+        }
+
+        val noteThirdTime = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
+
+        if (noteThirdTime !is CheckableListNote?) {
+            assertTrue(false)
+            return
+        }
+
+        log("Note third time time (after update) $noteThirdTime")
+
+        assertEquals("hi", noteThirdTime?.title)
+        assertEquals(5, noteThirdTime?.noteList?.size)
+        assertEquals("welcome changed", noteThirdTime?.noteList?.get(0)?.first)
+        assertEquals("hello", noteThirdTime?.noteList?.get(1)?.first)
+        assertEquals("thats cool", noteThirdTime?.noteList?.get(3)?.first)
+        assertEquals("test", noteThirdTime?.noteList?.get(4)?.first)
+        assertEquals("hi again changed", noteThirdTime?.noteList?.get(2)?.first)
+
+        assertFalse(noteThirdTime?.noteList?.get(0)?.second!!)
+        assertTrue(noteThirdTime?.noteList?.get(1)?.second!!)
+        assertTrue(noteThirdTime?.noteList?.get(2)?.second!!)
+        assertTrue(noteThirdTime?.noteList?.get(3)?.second!!)
+        assertTrue(noteThirdTime?.noteList?.get(4)?.second!!)
+
+        assertEquals(1L, noteThirdTime?.id)
+
+        noteThirdTime?.noteList?.apply {
+            this[0] = this[0].copy(second = true)
+            this[1] = this[1].copy(first = "number 1 changed")
+            this[3] = this[3].copy(first = "number 3 changed also wow", second = false)
+        }
+
+        noteThirdTime?.noteList?.add(Pair("we also added another one???", false))
+        noteThirdTime?.noteList?.add(Pair("one more", true))
+
+        runBlocking {
+            noteThirdTime?.also {
+                noteDao.updateNote(it.getNoteObject())
+            }
+        }
+
+        val noteForthTime = noteDao.getNote(noteId).blockingObserve()?.getNoteBasedOnType()
+
+        if (noteForthTime !is CheckableListNote?) {
+            assertTrue(false)
+            return
+        }
+
+        log("Note forth time time (after update) $noteForthTime")
+
+        assertEquals("hi", noteForthTime?.title)
+        assertEquals(7, noteForthTime?.noteList?.size)
+        assertEquals("welcome changed", noteForthTime?.noteList?.get(0)?.first)
+        assertEquals("number 1 changed", noteForthTime?.noteList?.get(1)?.first)
+        assertEquals("number 3 changed also wow", noteForthTime?.noteList?.get(3)?.first)
+        assertEquals("test", noteForthTime?.noteList?.get(4)?.first)
+        assertEquals("hi again changed", noteForthTime?.noteList?.get(2)?.first)
+        assertEquals("one more", noteForthTime?.noteList?.get(6)?.first)
+        assertEquals("we also added another one???", noteForthTime?.noteList?.get(5)?.first)
+
+        assertTrue(noteForthTime?.noteList?.get(0)?.second!!)
+        assertTrue(noteForthTime?.noteList?.get(1)?.second!!)
+        assertTrue(noteForthTime?.noteList?.get(2)?.second!!)
+        assertFalse(noteForthTime?.noteList?.get(3)?.second!!)
+        assertTrue(noteForthTime?.noteList?.get(4)?.second!!)
+        assertFalse(noteForthTime?.noteList?.get(5)?.second!!)
+        assertTrue(noteForthTime?.noteList?.get(6)?.second!!)
+
+        assertEquals(1L, noteForthTime?.id)
+    }
+
 
     companion object {
         private const val LOG_TAG = "TESTING"
