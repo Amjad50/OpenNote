@@ -21,7 +21,7 @@ class CheckableListNote : Note {
 
     constructor(
         title: String = "",
-        noteList: List<Pair<String, Boolean>>,
+        noteList: List<Item>,
         date: Date? = null,
         color: Int = Color.WHITE,
         id: Long = 0
@@ -30,7 +30,7 @@ class CheckableListNote : Note {
         note = serializeNoteList()
     }
 
-    val noteList = mutableListOf<Pair<String, Boolean>>()
+    val noteList = mutableListOf<Item>()
 
     override fun getNoteObject(): Note {
         updateNoteText()
@@ -46,7 +46,7 @@ class CheckableListNote : Note {
         noteList.clear()
         if (serializedNote.isNotEmpty())
             noteList.addAll(serializedNote.split(SEPARATOR).map {
-                Pair(it.substring(1), it[0] == 'X')
+                Item(it.substring(1), it[0] == 'X')
             })
     }
 
@@ -54,7 +54,7 @@ class CheckableListNote : Note {
         // put if its checked or not at the beginning and then proceed with the item text
         // then join all by the SEPARATOR string
         return noteList.joinToString(SEPARATOR) {
-            (if (it.second) "X" else "x") + it.first
+            (if (it.isChecked) "X" else "x") + it.text
         }
     }
 
@@ -70,4 +70,6 @@ class CheckableListNote : Note {
         // separators in the middle on notes which is not something very big of a deal
         private const val SEPARATOR = (7).toChar().toString()
     }
+
+    data class Item(var text: String = "", var isChecked: Boolean = false)
 }

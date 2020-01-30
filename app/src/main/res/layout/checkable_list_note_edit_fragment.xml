@@ -53,7 +53,6 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
                         android:background="@null"
-                        android:nestedScrollingEnabled="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/title_edit">
@@ -62,6 +61,7 @@
                             android:id="@+id/notes_list"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 </RelativeLayout>
 

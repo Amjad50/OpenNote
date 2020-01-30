@@ -124,11 +124,11 @@ class RoomDBTest {
             assertEquals(TESTING_LIST_NOTE.title, note?.title)
             assertEquals(TESTING_LIST_NOTE.color, note?.color)
             assertEquals(
-                TESTING_LIST_NOTE.noteList.map { it.first },
-                note?.noteList?.map { it.first })
+                TESTING_LIST_NOTE.noteList.map { it.text },
+                note?.noteList?.map { it.text })
             assertEquals(
-                TESTING_LIST_NOTE.noteList.map { it.second },
-                note?.noteList?.map { it.second })
+                TESTING_LIST_NOTE.noteList.map { it.isChecked },
+                note?.noteList?.map { it.isChecked })
         }
 
         // as its the first note to be inserted
@@ -172,11 +172,11 @@ class RoomDBTest {
             assertEquals(TESTING_LIST_NOTE.title, taskNote?.title)
             assertEquals(TESTING_LIST_NOTE.color, taskNote?.color)
             assertEquals(
-                TESTING_LIST_NOTE.noteList.map { it.first },
-                taskNote?.noteList?.map { it.first })
+                TESTING_LIST_NOTE.noteList.map { it.text },
+                taskNote?.noteList?.map { it.text })
             assertEquals(
-                TESTING_LIST_NOTE.noteList.map { it.second },
-                taskNote?.noteList?.map { it.second })
+                TESTING_LIST_NOTE.noteList.map { it.isChecked },
+                taskNote?.noteList?.map { it.isChecked })
         }
 
 
@@ -237,11 +237,11 @@ class RoomDBTest {
         }
 
         note?.title = "hi"
-        note?.noteList?.add(Pair("welcome", false))
-        note?.noteList?.add(Pair("hello", true))
-        note?.noteList?.add(Pair("hi again", false))
-        note?.noteList?.add(Pair("thats cool", false))
-        note?.noteList?.add(Pair("test", true))
+        note?.noteList?.add(CheckableListNote.Item("welcome", false))
+        note?.noteList?.add(CheckableListNote.Item("hello", true))
+        note?.noteList?.add(CheckableListNote.Item("hi again", false))
+        note?.noteList?.add(CheckableListNote.Item("thats cool", false))
+        note?.noteList?.add(CheckableListNote.Item("test", true))
 
         runBlocking {
             note?.also {
@@ -260,25 +260,26 @@ class RoomDBTest {
 
         assertEquals("hi", noteSecondTime?.title)
         assertEquals(5, noteSecondTime?.noteList?.size)
-        assertEquals("welcome", noteSecondTime?.noteList?.get(0)?.first)
-        assertEquals("hello", noteSecondTime?.noteList?.get(1)?.first)
-        assertEquals("thats cool", noteSecondTime?.noteList?.get(3)?.first)
-        assertEquals("test", noteSecondTime?.noteList?.get(4)?.first)
-        assertEquals("hi again", noteSecondTime?.noteList?.get(2)?.first)
+        assertEquals("welcome", noteSecondTime?.noteList?.get(0)?.text)
+        assertEquals("hello", noteSecondTime?.noteList?.get(1)?.text)
+        assertEquals("thats cool", noteSecondTime?.noteList?.get(3)?.text)
+        assertEquals("test", noteSecondTime?.noteList?.get(4)?.text)
+        assertEquals("hi again", noteSecondTime?.noteList?.get(2)?.text)
 
-        assertTrue(noteSecondTime?.noteList?.get(1)?.second!!)
-        assertTrue(noteSecondTime?.noteList?.get(4)?.second!!)
-        assertFalse(noteSecondTime?.noteList?.get(0)?.second!!)
-        assertFalse(noteSecondTime?.noteList?.get(2)?.second!!)
-        assertFalse(noteSecondTime?.noteList?.get(3)?.second!!)
+        assertTrue(noteSecondTime?.noteList?.get(1)?.isChecked!!)
+        assertTrue(noteSecondTime?.noteList?.get(4)?.isChecked!!)
+        assertFalse(noteSecondTime?.noteList?.get(0)?.isChecked!!)
+        assertFalse(noteSecondTime?.noteList?.get(2)?.isChecked!!)
+        assertFalse(noteSecondTime?.noteList?.get(3)?.isChecked!!)
 
         assertEquals(1L, noteSecondTime?.id)
 
 
         noteSecondTime?.noteList?.apply {
-            this[0] = this[0].copy(first = "welcome changed")
-            this[2] = this[2].copy(first = "hi again changed", second = true)
-            this[3] = this[3].copy(second = true)
+            this[0].text = "welcome changed"
+            this[2].text = "hi again changed"
+            this[2].isChecked = true
+            this[3].isChecked = true
         }
 
         runBlocking {
@@ -298,28 +299,29 @@ class RoomDBTest {
 
         assertEquals("hi", noteThirdTime?.title)
         assertEquals(5, noteThirdTime?.noteList?.size)
-        assertEquals("welcome changed", noteThirdTime?.noteList?.get(0)?.first)
-        assertEquals("hello", noteThirdTime?.noteList?.get(1)?.first)
-        assertEquals("thats cool", noteThirdTime?.noteList?.get(3)?.first)
-        assertEquals("test", noteThirdTime?.noteList?.get(4)?.first)
-        assertEquals("hi again changed", noteThirdTime?.noteList?.get(2)?.first)
+        assertEquals("welcome changed", noteThirdTime?.noteList?.get(0)?.text)
+        assertEquals("hello", noteThirdTime?.noteList?.get(1)?.text)
+        assertEquals("thats cool", noteThirdTime?.noteList?.get(3)?.text)
+        assertEquals("test", noteThirdTime?.noteList?.get(4)?.text)
+        assertEquals("hi again changed", noteThirdTime?.noteList?.get(2)?.text)
 
-        assertFalse(noteThirdTime?.noteList?.get(0)?.second!!)
-        assertTrue(noteThirdTime?.noteList?.get(1)?.second!!)
-        assertTrue(noteThirdTime?.noteList?.get(2)?.second!!)
-        assertTrue(noteThirdTime?.noteList?.get(3)?.second!!)
-        assertTrue(noteThirdTime?.noteList?.get(4)?.second!!)
+        assertFalse(noteThirdTime?.noteList?.get(0)?.isChecked!!)
+        assertTrue(noteThirdTime?.noteList?.get(1)?.isChecked!!)
+        assertTrue(noteThirdTime?.noteList?.get(2)?.isChecked!!)
+        assertTrue(noteThirdTime?.noteList?.get(3)?.isChecked!!)
+        assertTrue(noteThirdTime?.noteList?.get(4)?.isChecked!!)
 
         assertEquals(1L, noteThirdTime?.id)
 
         noteThirdTime?.noteList?.apply {
-            this[0] = this[0].copy(second = true)
-            this[1] = this[1].copy(first = "number 1 changed")
-            this[3] = this[3].copy(first = "number 3 changed also wow", second = false)
+            this[0].isChecked = true
+            this[1].text = "number 1 changed"
+            this[3].text = "number 3 changed also wow"
+            this[3].isChecked = false
         }
 
-        noteThirdTime?.noteList?.add(Pair("we also added another one???", false))
-        noteThirdTime?.noteList?.add(Pair("one more", true))
+        noteThirdTime?.noteList?.add(CheckableListNote.Item("we also added another one???", false))
+        noteThirdTime?.noteList?.add(CheckableListNote.Item("one more", true))
 
         runBlocking {
             noteThirdTime?.also {
@@ -338,21 +340,21 @@ class RoomDBTest {
 
         assertEquals("hi", noteForthTime?.title)
         assertEquals(7, noteForthTime?.noteList?.size)
-        assertEquals("welcome changed", noteForthTime?.noteList?.get(0)?.first)
-        assertEquals("number 1 changed", noteForthTime?.noteList?.get(1)?.first)
-        assertEquals("number 3 changed also wow", noteForthTime?.noteList?.get(3)?.first)
-        assertEquals("test", noteForthTime?.noteList?.get(4)?.first)
-        assertEquals("hi again changed", noteForthTime?.noteList?.get(2)?.first)
-        assertEquals("one more", noteForthTime?.noteList?.get(6)?.first)
-        assertEquals("we also added another one???", noteForthTime?.noteList?.get(5)?.first)
+        assertEquals("welcome changed", noteForthTime?.noteList?.get(0)?.text)
+        assertEquals("number 1 changed", noteForthTime?.noteList?.get(1)?.text)
+        assertEquals("number 3 changed also wow", noteForthTime?.noteList?.get(3)?.text)
+        assertEquals("test", noteForthTime?.noteList?.get(4)?.text)
+        assertEquals("hi again changed", noteForthTime?.noteList?.get(2)?.text)
+        assertEquals("one more", noteForthTime?.noteList?.get(6)?.text)
+        assertEquals("we also added another one???", noteForthTime?.noteList?.get(5)?.text)
 
-        assertTrue(noteForthTime?.noteList?.get(0)?.second!!)
-        assertTrue(noteForthTime?.noteList?.get(1)?.second!!)
-        assertTrue(noteForthTime?.noteList?.get(2)?.second!!)
-        assertFalse(noteForthTime?.noteList?.get(3)?.second!!)
-        assertTrue(noteForthTime?.noteList?.get(4)?.second!!)
-        assertFalse(noteForthTime?.noteList?.get(5)?.second!!)
-        assertTrue(noteForthTime?.noteList?.get(6)?.second!!)
+        assertTrue(noteForthTime?.noteList?.get(0)?.isChecked!!)
+        assertTrue(noteForthTime?.noteList?.get(1)?.isChecked!!)
+        assertTrue(noteForthTime?.noteList?.get(2)?.isChecked!!)
+        assertFalse(noteForthTime?.noteList?.get(3)?.isChecked!!)
+        assertTrue(noteForthTime?.noteList?.get(4)?.isChecked!!)
+        assertFalse(noteForthTime?.noteList?.get(5)?.isChecked!!)
+        assertTrue(noteForthTime?.noteList?.get(6)?.isChecked!!)
 
         assertEquals(1L, noteForthTime?.id)
     }
@@ -378,11 +380,11 @@ class RoomDBTest {
             title = "goals",
             date = Date(321),
             noteList = listOf(
-                Pair("welcome", true),
-                Pair("another welcome", true),
-                Pair("test note checkable", true),
-                Pair("yes", false),
-                Pair("should work", true)
+                CheckableListNote.Item("welcome", true),
+                CheckableListNote.Item("another welcome", true),
+                CheckableListNote.Item("test note checkable", true),
+                CheckableListNote.Item("yes", false),
+                CheckableListNote.Item("should work", true)
             )
         )
     }

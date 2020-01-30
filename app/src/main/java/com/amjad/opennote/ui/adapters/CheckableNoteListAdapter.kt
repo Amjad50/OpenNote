@@ -1,14 +1,15 @@
 package com.amjad.opennote.ui.adapters
 
-import android.content.Context
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.amjad.opennote.data.entities.CheckableListNote
+import com.amjad.opennote.databinding.CheckableNoteItemBinding
 
 class CheckableNoteListAdapter :
-    ListAdapter<Pair<String, Boolean>, CheckableNoteListAdapter.CheckableListNoteItemViewHolder>(
+    ListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.CheckableListNoteItemViewHolder>(
         CheckableNoteListDiffItemCallBack()
     ) {
 
@@ -16,33 +17,49 @@ class CheckableNoteListAdapter :
         parent: ViewGroup,
         viewType: Int
     ): CheckableListNoteItemViewHolder {
-        return CheckableListNoteItemViewHolder(parent.context)
+        return CheckableListNoteItemViewHolder(
+            CheckableNoteItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
+    // not sure where to put this thing
+    // FIXME: when loading the recyclerview the whole list is being rendered.
+    //  This is due to the way the scrolling is happening right now which is not very nice
     override fun onBindViewHolder(holder: CheckableListNoteItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class CheckableListNoteItemViewHolder(context: Context) :
-        RecyclerView.ViewHolder(TextView(context)) {
-        fun bind(note: Pair<String, Boolean>) {
-            (itemView as TextView).text = note.first
+    inner class CheckableListNoteItemViewHolder(private val binding: CheckableNoteItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: CheckableListNote.Item) {
+            binding.item = item
+            binding.setOnDelete {
+                TODO(
+                    "implement a way to delete the note, as ListAdapter store the items in" +
+                            "readonly list"
+                )
+            }
         }
     }
 }
 
 
-private class CheckableNoteListDiffItemCallBack : DiffUtil.ItemCallback<Pair<String, Boolean>>() {
+private class CheckableNoteListDiffItemCallBack : DiffUtil.ItemCallback<CheckableListNote.Item>() {
     override fun areContentsTheSame(
-        oldItem: Pair<String, Boolean>,
-        newItem: Pair<String, Boolean>
+        oldItem: CheckableListNote.Item,
+        newItem: CheckableListNote.Item
     ): Boolean =
-        newItem.first == oldItem.first && newItem.second == oldItem.second
+        newItem.text == oldItem.text && newItem.isChecked == oldItem.isChecked
 
 
     override fun areItemsTheSame(
-        oldItem: Pair<String, Boolean>,
-        newItem: Pair<String, Boolean>
+        oldItem: CheckableListNote.Item,
+        newItem: CheckableListNote.Item
     ): Boolean =
-        newItem.hashCode() == oldItem.hashCode()
+        newItem == oldItem
 }

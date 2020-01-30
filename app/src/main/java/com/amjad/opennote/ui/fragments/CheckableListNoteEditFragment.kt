@@ -47,7 +47,12 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
 
         // TODO: remove this, its only a debug thing to add items to the list
         binding.titleEdit.doOnTextChanged { _, _, _, _ ->
-            (viewModel.note.value as CheckableListNote?)?.noteList?.add(Pair("welcome", false))
+            (viewModel.note.value as CheckableListNote?)?.noteList?.add(
+                CheckableListNote.Item(
+                    "welcome",
+                    false
+                )
+            )
             (viewModel.note as MutableLiveData).run { value = value }
         }
 

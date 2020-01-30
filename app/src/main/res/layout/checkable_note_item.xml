@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+                name="item"
+                type="com.amjad.opennote.data.entities.CheckableListNote.Item" />
+
+        <variable
+                name="onDelete"
+                type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@={item.checked}" />
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ems="10"
+                android:hint="@string/note_hint"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="@={item.text}" />
+
+        <ImageView
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description_close_item"
+                android:onClick="@{onDelete}"
+                android:src="@drawable/ic_close_x" />
+    </LinearLayout>
+</layout>
