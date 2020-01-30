@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.data.entities.Note
+import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.NoteitemViewBinding
 import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
 
@@ -25,6 +26,7 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(
+            // TODO: create another view for CheckableNoteList items
             NoteitemViewBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -45,9 +47,19 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
                 selected = selector.isSelected(note.id)
                 setOnNoteClick {
                     if (!selector.hasSelection()) {
-                        // open note for editing
-                        val action =
-                            NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(noteId = note.id)
+                        // open note for editing based on type
+                        val action = when (note.type) {
+                            NoteType.UNDEFINED_TYPE -> NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(
+                                noteId = note.id
+                            )
+                            NoteType.TEXT_NOTE -> NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(
+                                noteId = note.id
+                            )
+                            NoteType.CHECKABLE_LIST_NOTE -> NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
+                                noteId = note.id
+                            )
+                        }
+
                         it.findNavController()
                             .navigate(action)
                     } else {

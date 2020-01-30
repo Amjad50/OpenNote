@@ -55,5 +55,15 @@ open class Note(
     override fun toString(): String {
         return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id)"
     }
+
+    companion object {
+        fun createNoteBasedOnType(type: NoteType): Note {
+            return when (type) {
+                NoteType.UNDEFINED_TYPE -> Note()
+                NoteType.TEXT_NOTE -> Note()
+                NoteType.CHECKABLE_LIST_NOTE -> CheckableListNote()
+            }
+        }
+    }
 }
 
