@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -73,14 +76,13 @@ abstract class BaseNoteEditFragment : Fragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        viewModel.oldStatusAndActionBarStyles.run {
-            changeActionBarStyles(background, elevation, statusBarColor)
-            // to save again if this is just a configuration change
-            saved = false
-        }
+    protected fun requestFocusAndShowKeyboard(view: View) {
+        if (view.requestFocusFromTouch())
+            context?.also {
+                val inputMethodManager =
+                    ContextCompat.getSystemService(it, InputMethodManager::class.java)
+                inputMethodManager?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -103,6 +105,23 @@ abstract class BaseNoteEditFragment : Fragment() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // hide the keyboard
+        context?.also {
+            val inputMethodManager =
+                ContextCompat.getSystemService(it, InputMethodManager::class.java)
+            inputMethodManager?.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+
+        viewModel.oldStatusAndActionBarStyles.run {
+            changeActionBarStyles(background, elevation, statusBarColor)
+            // to save again if this is just a configuration change
+            saved = false
         }
     }
 
