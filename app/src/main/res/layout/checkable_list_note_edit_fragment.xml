@@ -16,57 +16,13 @@
             android:background="@{model.note.color}"
             android:orientation="vertical">
 
-        <ScrollView
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notes_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/title_edit"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@null"
-                        android:ems="10"
-                        android:hint="@string/title_hint"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:text="@={model.note.title}"
-                        android:textSize="24sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                <!-- this is a method to enable the recyclerview inside to increase in height
-                     together with code in the class to stop it from scrolling
-                     this is used to make the recyclerview scroll with the scrollview at the top -->
-                <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@null"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/title_edit">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/notes_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:nestedScrollingEnabled="false"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </RelativeLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+                android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/checkable_note_item" />
 
         <TextView
                 android:layout_width="match_parent"

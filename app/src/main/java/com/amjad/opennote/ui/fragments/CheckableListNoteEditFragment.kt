@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -42,19 +40,8 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
         // this might be redundant if the id was already set
             viewModel.setNoteID(args.noteId)
 
-        val adapter = CheckableNoteListAdapter()
+        val adapter = CheckableNoteListAdapter(viewModel)
         binding.notesList.adapter = adapter
-
-        // TODO: remove this, its only a debug thing to add items to the list
-        binding.titleEdit.doOnTextChanged { _, _, _, _ ->
-            (viewModel.note.value as CheckableListNote?)?.noteList?.add(
-                CheckableListNote.Item(
-                    "welcome",
-                    false
-                )
-            )
-            (viewModel.note as MutableLiveData).run { value = value }
-        }
 
         observersInit(adapter)
 
@@ -81,6 +68,9 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
             // this will only work the first time, as its the same list reference we need to call
             // notifyDataSetChanged for it to get updated
             adapter.submitList(note.noteList)
+            // FIXME: the whole list is being redrawn when the color is changed
+            //  this is due to notifying of update to the whole dataset, it doesn't know
+            //  where the change actually is
             adapter.notifyDataSetChanged()
 
             Log.i("BB", note.noteList.size.toString())
