@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.R
 import com.amjad.opennote.data.entities.CheckableListNote
 import com.amjad.opennote.data.entities.NoteType
@@ -42,9 +43,22 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
         val adapter = CheckableNoteListAdapter(viewModel)
         binding.notesList.adapter = adapter
 
+        setupScrollViewShadowsEffect()
+
         observersInit(adapter)
 
         return binding.root
+    }
+
+    private fun setupScrollViewShadowsEffect() {
+        binding.notesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                binding.topShadowVisible = recyclerView.canScrollVertically(-1)
+                binding.bottomShadowVisible = recyclerView.canScrollVertically(1)
+            }
+        })
     }
 
     private fun observersInit(adapter: CheckableNoteListAdapter) {

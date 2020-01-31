@@ -36,6 +36,16 @@ class TextNoteEditFragment : BaseNoteEditFragment() {
         // this might be redundant if the id was already set
             viewModel.setNoteID(args.noteId)
 
+        setupScrollViewShadowsEffect()
+
         return binding.root
+    }
+
+    private fun setupScrollViewShadowsEffect() {
+        // FIXME: bottom shadow not activated from the start
+        binding.scrollView.setOnScrollChangeListener { v, _, _, _, _ ->
+            binding.topShadowVisible = v.canScrollVertically(-1)
+            binding.bottomShadowVisible = v.canScrollVertically(1)
+        }
     }
 }
