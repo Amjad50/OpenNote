@@ -3,6 +3,7 @@ package com.amjad.opennote.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -68,10 +69,10 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
         fun bind(item: CheckableListNote.Item) {
             binding.item = item
             binding.setOnDelete {
-                TODO(
-                    "implement a way to delete the note, as ListAdapter store the items in" +
-                            "readonly list"
-                )
+                (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(adapterPosition)
+                (viewModel.note as MutableLiveData).run {
+                    value = value
+                }
             }
         }
     }
@@ -104,5 +105,5 @@ private class CheckableNoteListDiffItemCallBack : DiffUtil.ItemCallback<Checkabl
         oldItem: CheckableListNote.Item,
         newItem: CheckableListNote.Item
     ): Boolean =
-        newItem == oldItem
+        newItem === oldItem
 }

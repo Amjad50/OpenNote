@@ -65,13 +65,14 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
             }
             val note = it as CheckableListNote
 
-            // this will only work the first time, as its the same list reference we need to call
-            // notifyDataSetChanged for it to get updated
-            adapter.submitList(note.noteList)
-            // FIXME: the whole list is being redrawn when the color is changed
-            //  this is due to notifying of update to the whole dataset, it doesn't know
-            //  where the change actually is
-            adapter.notifyDataSetChanged()
+            // copy the whole list every time, this is ok as it copies the references
+            // also when using references, when updating the inside data of any of the Items
+            // it will also be updated here as its a refernce to the same data
+            // which helps a lot when saving the data to the database
+            adapter.submitList(note.noteList.toList())
+
+            // FIXME: when removed notifyDataSetChanged(), when starting the fragment
+            //  it jumps to the end of the list, not sure if the problem is here or not
 
             Log.i("BB", note.noteList.size.toString())
         })
