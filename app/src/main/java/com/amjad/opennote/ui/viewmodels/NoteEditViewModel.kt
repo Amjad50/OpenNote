@@ -37,6 +37,12 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun notifyNoteUpdated() {
+        (note as MutableLiveData).run {
+            value = value
+        }
+    }
+
     /**
      * @return true if the selection has actually changes, else false
      */

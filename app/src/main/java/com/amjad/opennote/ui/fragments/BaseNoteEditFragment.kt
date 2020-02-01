@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.amjad.opennote.MainActivity
@@ -96,10 +95,7 @@ abstract class BaseNoteEditFragment : Fragment() {
                     ColorChooseDialog().setOnColorClick { color ->
                         viewModel.note.value?.color = color
 
-                        // so we can update the value to the observers
-                        (viewModel.note as MutableLiveData).run {
-                            value = value
-                        }
+                        viewModel.notifyNoteUpdated()
                     }.show(fragmentManager, "ColorChooseDialogInEdit")
                 }
                 true

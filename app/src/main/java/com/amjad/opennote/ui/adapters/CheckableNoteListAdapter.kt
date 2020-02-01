@@ -3,7 +3,6 @@ package com.amjad.opennote.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.data.entities.CheckableListNote
@@ -72,16 +71,12 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             binding.item = item
 
             binding.setOnCheckboxChange {
-                (viewModel.note as MutableLiveData).run {
-                    value = value
-                }
+                viewModel.notifyNoteUpdated()
             }
 
             binding.setOnDelete {
                 (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(item.position)
-                (viewModel.note as MutableLiveData).run {
-                    value = value
-                }
+                viewModel.notifyNoteUpdated()
             }
         }
     }
@@ -100,9 +95,7 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             binding.setOnAddNewNote {
                 // TODO: make it auto focus to type immediately
                 (viewModel.note.value as CheckableListNote?)?.noteList?.add(CheckableListNote.Item())
-                (viewModel.note as MutableLiveData).run {
-                    value = value
-                }
+                viewModel.notifyNoteUpdated()
             }
         }
 
