@@ -10,6 +10,10 @@
         <variable
                 name="onDelete"
                 type="android.view.View.OnClickListener" />
+
+        <variable
+                name="onCheckboxChange"
+                type="android.view.View.OnClickListener" />
     </data>
 
     <LinearLayout
@@ -23,7 +27,8 @@
         <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@={item.checked}" />
+                android:checked="@={item.checked}"
+                android:onClick="@{onCheckboxChange}" />
 
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="0dp"

@@ -78,11 +78,14 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
             }
             val note = it as CheckableListNote
 
+            // update the position for each item before sorting to make deleting easier
+            note.noteList.forEachIndexed { i, item -> item.position = i }
+
             // copy the whole list every time, this is ok as it copies the references
             // also when using references, when updating the inside data of any of the Items
-            // it will also be updated here as its a refernce to the same data
+            // it will also be updated here as its a reference to the same data
             // which helps a lot when saving the data to the database
-            adapter.submitList(note.noteList.toList())
+            adapter.submitList(note.noteList.sorted())
         })
     }
 }

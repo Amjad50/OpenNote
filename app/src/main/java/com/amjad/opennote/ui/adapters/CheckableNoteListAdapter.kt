@@ -70,9 +70,15 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
 
         fun bind(item: CheckableListNote.Item) {
             binding.item = item
+
+            binding.setOnCheckboxChange {
+                (viewModel.note as MutableLiveData).run {
+                    value = value
+                }
+            }
+
             binding.setOnDelete {
-                // TODO: make it so that no need to ( -1 ), maybe from the adapter somehow
-                (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(layoutPosition - 1)
+                (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(item.position)
                 (viewModel.note as MutableLiveData).run {
                     value = value
                 }

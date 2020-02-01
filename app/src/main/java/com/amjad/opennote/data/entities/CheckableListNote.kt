@@ -71,5 +71,16 @@ class CheckableListNote : Note {
         private const val SEPARATOR = (7).toChar().toString()
     }
 
-    data class Item(var text: String = "", var isChecked: Boolean = false)
+    // position property is only used by the recyclerView adapter
+    // used -1, so that if it was not used properly it will throw an error
+    data class Item(var text: String = "", var isChecked: Boolean = false, var position: Int = -1) :
+        Comparable<Item> {
+        override fun compareTo(other: Item): Int {
+            return if (this.isChecked && !other.isChecked)
+                1
+            else if (!this.isChecked && other.isChecked)
+                -1
+            else 0
+        }
+    }
 }
