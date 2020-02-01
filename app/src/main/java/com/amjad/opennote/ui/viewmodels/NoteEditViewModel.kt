@@ -49,6 +49,7 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
         return false
     }
 
+    // FIXME: detected a weird bug crashes here, something about cannot find apk file??
     fun insertNewNote(type: NoteType) = viewModelScope.launch {
         setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply { date = Date() }))
     }
