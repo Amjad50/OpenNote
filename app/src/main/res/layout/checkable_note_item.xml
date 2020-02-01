@@ -31,7 +31,6 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
-                android:hint="@string/note_hint"
                 android:inputType="text"
                 android:singleLine="true"
                 android:text="@={item.text}" />
