@@ -7,35 +7,47 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.data.entities.CheckableListNote
+import com.amjad.opennote.databinding.CheckableAddNewItemViewBinding
 import com.amjad.opennote.databinding.CheckableNoteItemBinding
 import com.amjad.opennote.databinding.CheckableTitleItemBinding
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
 
 class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     OffsettedListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
-        CheckableNoteListDiffItemCallBack(), 1
+        CheckableNoteListDiffItemCallBack(), 1, 1
     ) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BaseCheckableNoteItemViewHolder {
-        return if (viewType == VIEWTYPE_HEADER)
-            TitleNoteItemViewHolder(
+        return when (viewType) {
+            VIEWTYPE_HEADER -> TitleNoteItemViewHolder(
                 CheckableTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-        else
-            CheckableListNoteItemViewHolder(
-                CheckableNoteItemBinding.inflate(
+            VIEWTYPE_LIST_ITEM ->
+                CheckableListNoteItemViewHolder(
+                    CheckableNoteItemBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            VIEWTYPE_FOOTER -> AddNewItemViewHolder(
+                CheckableAddNewItemViewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
+            else -> {
+                throw IllegalArgumentException("Unknown type with code $viewType")
+            }
+        }
 
     }
 
@@ -47,10 +59,13 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             is TitleNoteItemViewHolder -> {
                 holder.bind(viewModel)
             }
+            is AddNewItemViewHolder -> {
+                holder.bind()
+            }
         }
     }
 
-    inner class CheckableListNoteItemViewHolder(private val binding: CheckableNoteItemBinding) :
+    private inner class CheckableListNoteItemViewHolder(private val binding: CheckableNoteItemBinding) :
         BaseCheckableNoteItemViewHolder(binding.root) {
 
         fun bind(item: CheckableListNote.Item) {
@@ -65,14 +80,29 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
         }
     }
 
-    inner class TitleNoteItemViewHolder(private val binding: CheckableTitleItemBinding) :
+    private class TitleNoteItemViewHolder(private val binding: CheckableTitleItemBinding) :
         BaseCheckableNoteItemViewHolder(binding.root) {
         fun bind(viewModel: NoteEditViewModel) {
             binding.model = viewModel
         }
     }
 
-    abstract inner class BaseCheckableNoteItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    private inner class AddNewItemViewHolder(val binding: CheckableAddNewItemViewBinding) :
+        CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder(binding.root) {
+
+        fun bind() {
+            binding.setOnAddNewNote {
+                // TODO: make it auto focus to type immediately
+                (viewModel.note.value as CheckableListNote?)?.noteList?.add(CheckableListNote.Item())
+                (viewModel.note as MutableLiveData).run {
+                    value = value
+                }
+            }
+        }
+
+    }
+
+    abstract class BaseCheckableNoteItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }
 
 

@@ -26,4 +26,5 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="new_list_note">Create List</string>
     <string name="error_not_list_type_note">[ERROR] tried to open a list note but it is not a note of type list. exiting…</string>
     <string name="description_close_item">delete note item</string>
+    <string name="add_new_note_checkable_note_list">Add Note</string>
 </resources>
