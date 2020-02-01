@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.data.entities.CheckableListNote
 import com.amjad.opennote.databinding.CheckableNoteItemBinding
@@ -13,27 +12,15 @@ import com.amjad.opennote.databinding.CheckableTitleItemBinding
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
 
 class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
-    ListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
-        CheckableNoteListDiffItemCallBack()
+    OffsettedListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
+        CheckableNoteListDiffItemCallBack(), 1
     ) {
-
-    override fun getItemCount(): Int {
-        return super.getItemCount() + 1
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        // first one is the title
-        return if (position == 0)
-            VIEWTYPE_TITLE
-        else
-            VIEWTYPE_NOTE_ITEM
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BaseCheckableNoteItemViewHolder {
-        return if (viewType == VIEWTYPE_TITLE)
+        return if (viewType == VIEWTYPE_HEADER)
             TitleNoteItemViewHolder(
                 CheckableTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -55,7 +42,7 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     override fun onBindViewHolder(holder: BaseCheckableNoteItemViewHolder, position: Int) {
         when (holder) {
             is CheckableListNoteItemViewHolder -> {
-                holder.bind(getItem(position - 1))
+                holder.bind(getItem(position))
             }
             is TitleNoteItemViewHolder -> {
                 holder.bind(viewModel)
@@ -69,7 +56,8 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
         fun bind(item: CheckableListNote.Item) {
             binding.item = item
             binding.setOnDelete {
-                (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(adapterPosition)
+                // TODO: make it so that no need to ( -1 ), maybe from the adapter somehow
+                (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(layoutPosition - 1)
                 (viewModel.note as MutableLiveData).run {
                     value = value
                 }
@@ -85,11 +73,6 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     }
 
     abstract inner class BaseCheckableNoteItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
-    companion object {
-        const val VIEWTYPE_TITLE = 0
-        const val VIEWTYPE_NOTE_ITEM = 1
-    }
 }
 
 

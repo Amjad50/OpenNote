@@ -78,20 +78,11 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
             }
             val note = it as CheckableListNote
 
-            val wasEmpty = adapter.currentList.isEmpty()
-
             // copy the whole list every time, this is ok as it copies the references
             // also when using references, when updating the inside data of any of the Items
             // it will also be updated here as its a refernce to the same data
             // which helps a lot when saving the data to the database
             adapter.submitList(note.noteList.toList())
-
-            // TODO: change this solution to something better, which fixes the issue of auto
-            //  scroll to the bottom of the list on the first run
-            // kind of work around which is not very cool, but works for now
-            if (wasEmpty)
-                adapter.notifyDataSetChanged()
-
         })
     }
 }
