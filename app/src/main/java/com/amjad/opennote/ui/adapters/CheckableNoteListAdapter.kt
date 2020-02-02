@@ -1,5 +1,6 @@
 package com.amjad.opennote.ui.adapters
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,12 +68,24 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     private inner class CheckableListNoteItemViewHolder(private val binding: CheckableNoteItemBinding) :
         BaseCheckableNoteItemViewHolder(binding.root) {
 
+        private fun updateTextEditStrikethough(item: CheckableListNote.Item) {
+            binding.textEdit.paintFlags =
+                if (item.isChecked)
+                    binding.textEdit.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                else
+                    binding.textEdit.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
+
         fun bind(item: CheckableListNote.Item) {
             binding.item = item
 
             binding.setOnCheckboxChange {
                 viewModel.notifyNoteUpdated()
+                // when changing the state of the note
+                updateTextEditStrikethough(item)
             }
+            // when creating
+            updateTextEditStrikethough(item)
 
             binding.setOnDelete {
                 (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(item.position)
