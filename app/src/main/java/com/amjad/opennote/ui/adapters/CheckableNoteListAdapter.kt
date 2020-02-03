@@ -11,6 +11,7 @@ import com.amjad.opennote.databinding.CheckableAddNewItemViewBinding
 import com.amjad.opennote.databinding.CheckableNoteItemBinding
 import com.amjad.opennote.databinding.CheckableTitleItemBinding
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
+import com.amjad.opennote.utils.requestFocusAndShowKeyboard
 
 class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     OffsettedListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
@@ -87,6 +88,14 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             // when creating
             updateTextEditStrikethough(item)
 
+            if (viewModel.selectNextListItem) {
+                // FIXME: when adding item while editing another, it will add it but hide the
+                //  keyboard, as it is set to "toggle"
+                requestFocusAndShowKeyboard(binding.textEdit, binding.root.context)
+                viewModel.selectNextListItem = false
+            }
+
+
             binding.setOnDelete {
                 (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(item.position)
                 viewModel.notifyNoteUpdated()
@@ -108,6 +117,7 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             binding.setOnAddNewNote {
                 // TODO: make it auto focus to type immediately
                 (viewModel.note.value as CheckableListNote?)?.noteList?.add(CheckableListNote.Item())
+                viewModel.selectNextListItem = true
                 viewModel.notifyNoteUpdated()
             }
         }

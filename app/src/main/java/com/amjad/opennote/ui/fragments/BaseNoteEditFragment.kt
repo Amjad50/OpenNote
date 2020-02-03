@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
@@ -73,15 +72,6 @@ abstract class BaseNoteEditFragment : Fragment() {
             supportActionBar?.elevation = elevation
             window.statusBarColor = statusBarColor
         }
-    }
-
-    protected fun requestFocusAndShowKeyboard(view: View) {
-        if (view.requestFocusFromTouch())
-            context?.also {
-                val inputMethodManager =
-                    ContextCompat.getSystemService(it, InputMethodManager::class.java)
-                inputMethodManager?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
-            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

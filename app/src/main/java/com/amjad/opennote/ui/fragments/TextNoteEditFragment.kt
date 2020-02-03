@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.TextNoteEditFragmentBinding
+import com.amjad.opennote.utils.requestFocusAndShowKeyboard
 
 
 class TextNoteEditFragment : BaseNoteEditFragment() {
@@ -28,7 +29,7 @@ class TextNoteEditFragment : BaseNoteEditFragment() {
         // start editing right away if this is a new note and insert the note into the database
         if (args.noteId == NEW_NOTE_ID) {
             if (!viewModel.isNoteSelected) {
-                requestFocusAndShowKeyboard(binding.noteEdit)
+                requestFocusAndShowKeyboard(binding.noteEdit, context)
 
                 viewModel.insertNewNote(NoteType.TEXT_NOTE)
             }

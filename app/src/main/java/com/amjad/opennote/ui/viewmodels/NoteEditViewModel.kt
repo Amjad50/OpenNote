@@ -25,6 +25,8 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
             field = v
         }
 
+    var selectNextListItem = false
+
 
     init {
         val wordsDao = NoteDatabase.getDatabase(application).noteDao()
