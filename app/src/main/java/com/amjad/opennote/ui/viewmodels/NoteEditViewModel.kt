@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
+import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.repositories.NotesRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,13 +25,23 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
             field = v
         }
 
+    var selectNextListItem = false
+
 
     init {
         val wordsDao = NoteDatabase.getDatabase(application).noteDao()
 
         repository = NotesRepository(wordsDao)
         note = Transformations.switchMap(selectedNoteID) { id ->
-            repository.getNote(id)
+            Transformations.map(repository.getNote(id)) {
+                it.getNoteBasedOnType()
+            }
+        }
+    }
+
+    fun notifyNoteUpdated() {
+        (note as MutableLiveData).run {
+            value = value
         }
     }
 
@@ -46,19 +57,21 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
         return false
     }
 
-    fun insertNewNote() = viewModelScope.launch {
-        setNoteID(repository.insert(Note(date = Date())))
+    // FIXME: detected a weird bug crashes here, something about cannot find apk file??
+    fun insertNewNote(type: NoteType) = viewModelScope.launch {
+        setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply { date = Date() }))
     }
 
     fun updateCurrentNote() = GlobalScope.launch {
         note.value?.also {
+            val note = it.getNoteObject()
             // TODO: need condition to update the date, or from the view
-            it.date = Date()
+            note.date = Date()
 
-            if (!(it.title.isEmpty() && it.note.isEmpty()))
-                repository.updateNote(it)
+            if (!(note.title.isEmpty() && note.note.isEmpty()))
+                repository.updateNote(note)
             else
-                repository.deleteNote(it)
+                repository.deleteNote(note)
         }
     }
 

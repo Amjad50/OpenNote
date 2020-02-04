@@ -15,6 +15,7 @@ import com.amjad.opennote.ui.adapters.NotesListAdapter
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.leinardi.android.speeddial.SpeedDialView
 
 class NotesListFragment : Fragment() {
     private lateinit var binding: NotesListFragmentBinding
@@ -44,9 +45,7 @@ class NotesListFragment : Fragment() {
 
         observersInit(adapter)
 
-        binding.setOnNewNoteClick {
-            openNewNote()
-        }
+        initSpeedDial(binding.speedDial)
 
         return binding.root
     }
@@ -75,11 +74,47 @@ class NotesListFragment : Fragment() {
         })
     }
 
-    private fun openNewNote() {
+    private fun initSpeedDial(speedDial: SpeedDialView) {
+
+        speedDial.inflate(R.menu.speed_dial_menu)
+
+        speedDial.setOnActionSelectedListener {
+            when (it.id) {
+                R.id.speed_dial_add_list_note -> {
+                    openNewListNote()
+                    false
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+
+        speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
+            override fun onMainActionSelected(): Boolean {
+                openNewTextNote()
+                return false
+            }
+
+            override fun onToggleChanged(isOpen: Boolean) {}
+        })
+
+    }
+
+    private fun openNewTextNote() {
         // before going to the new note, we clear the actionMode
         actionMode?.finish()
 
         val action = NotesListFragmentDirections.actionMainFragmentToNoteEditFragment()
+        findNavController()
+            .navigate(action)
+    }
+
+    private fun openNewListNote() {
+        actionMode?.finish()
+
+        val action =
+            NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment()
         findNavController()
             .navigate(action)
     }

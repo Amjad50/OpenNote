@@ -1,14 +1,22 @@
 package com.amjad.opennote.ui.adapters
 
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.amjad.opennote.R
+import com.amjad.opennote.data.entities.CheckableListNote
 import com.amjad.opennote.data.entities.Note
+import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.NoteitemViewBinding
 import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
+import kotlin.math.min
 
 class NotesListAdapter(private val selector: NoteListSelector<Long>) :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(NoteListDiffItemCallBack()) {
@@ -41,15 +49,34 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
             binding.apply {
+
+                // clear views
+                binding.innerNoteContainer.removeAllViews()
+
+                if (note.type == NoteType.CHECKABLE_LIST_NOTE)
+                    bindCheckableListNote(note.getCheckableListNote())
+                else
+                    bindTextNote(note)
+
                 this.note = note
                 selected = selector.isSelected(note.id)
                 setOnNoteClick {
                     if (!selector.hasSelection()) {
-                        // open note for editing
                         val action =
-                            NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(noteId = note.id)
-                        it.findNavController()
-                            .navigate(action)
+                            when (note.type) {
+                                NoteType.TEXT_NOTE ->
+                                    NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(
+                                        noteId = note.id
+                                    )
+                                NoteType.CHECKABLE_LIST_NOTE ->
+                                    NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
+                                        noteId = note.id
+                                    )
+                                NoteType.UNDEFINED_TYPE ->
+                                    throw IllegalArgumentException("UNDEFINED_TYPE note, should not exist")
+                            }
+
+                        it.findNavController().navigate(action)
                     } else {
                         selector.toggle(note.id)
                     }
@@ -64,6 +91,62 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
                     true
                 }
                 executePendingBindings()
+            }
+        }
+
+        private fun bindCheckableListNote(note: CheckableListNote) {
+            val notelist = note.noteList
+            notelist.sort()
+
+
+            var unchecked = notelist.indexOfFirst { it.isChecked }
+            if (unchecked == -1) // reached to the end but didn't find any
+                unchecked = notelist.size
+
+            val checked = notelist.size - unchecked
+
+            val numberToView = min(unchecked, 5)
+            val numberNotToView = unchecked - numberToView
+
+            binding.innerNoteContainer.run {
+                for (i in 0 until numberToView)
+                    addView(
+                        CheckBox(context).apply {
+                            text = notelist[i].text
+                            setTextColor(0x8a000000.toInt())
+                            setButtonDrawable(R.drawable.ic_check_box_unchecked_for_notelist_item)
+                            isEnabled = false
+                            gravity = Gravity.START
+                            isFocusable = false
+                            isClickable = false
+                        }
+                    )
+
+                if (numberNotToView > 0)
+                    addView(
+                        TextView(binding.root.context).apply {
+                            text = context.getString(R.string.checked_items_count, numberNotToView)
+                        }
+                    )
+                if (checked > 0)
+                    addView(
+                        TextView(binding.root.context).apply {
+                            text = context.getString(R.string.checked_items_count, checked)
+                        }
+                    )
+            }
+        }
+
+
+        private fun bindTextNote(note: Note) {
+            binding.innerNoteContainer.run {
+                addView(
+                    TextView(context).apply {
+                        ellipsize = TextUtils.TruncateAt.END
+                        maxLines = 5
+                        text = note.note
+                    }
+                )
             }
         }
     }

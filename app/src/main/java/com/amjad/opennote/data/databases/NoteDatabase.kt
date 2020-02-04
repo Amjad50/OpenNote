@@ -8,11 +8,12 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.amjad.opennote.data.converters.DataConverters
+import com.amjad.opennote.data.converters.NoteTypeConverters
 import com.amjad.opennote.data.daos.NoteDao
 import com.amjad.opennote.data.entities.Note
 
-@Database(entities = [Note::class], version = 2, exportSchema = false)
-@TypeConverters(DataConverters::class)
+@Database(entities = [Note::class], version = 3, exportSchema = false)
+@TypeConverters(DataConverters::class, NoteTypeConverters::class)
 abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
@@ -45,6 +46,12 @@ abstract class NoteDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE note_table ADD COLUMN type INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
         fun getDatabase(context: Context): NoteDatabase {
             val tempInstance =
                 INSTANCE
@@ -56,7 +63,7 @@ abstract class NoteDatabase : RoomDatabase() {
                     context.applicationContext,
                     NoteDatabase::class.java,
                     "word_database"
-                ).addMigrations(MIGRATION_1_2)
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 return instance

@@ -23,4 +23,11 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="search">Search</string>
     <string name="menu_color">Select Color</string>
     <string name="note_color">Note Color</string>
+    <string name="new_list_note">Create List</string>
+    <string name="error_not_list_type_note">[ERROR] tried to open a list note but it is not a note of type list. exiting…</string>
+    <string name="description_close_item">delete note item</string>
+    <string name="add_new_note_checkable_note_list">Add Note</string>
+    <string name="check_box_icon_description">check box icon for item list view</string>
+    <string name="unchecked_items_count">+ %1$d unchecked items</string>
+    <string name="checked_items_count">+ %1$d checked items</string>
 </resources>

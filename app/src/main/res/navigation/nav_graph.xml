@@ -19,14 +19,26 @@
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"
                 app:popUpTo="@+id/note_list_fragment" />
+        <action
+                android:id="@+id/action_note_list_fragment_to_checkableListNoteEditFragment"
+                app:destination="@id/checkableListNoteEditFragment" />
     </fragment>
     <fragment
             android:id="@+id/note_edit_fragment"
-            android:name="com.amjad.opennote.ui.fragments.NoteEditFragment"
-            tools:layout="@layout/note_edit_fragment">
+            android:name="com.amjad.opennote.ui.fragments.TextNoteEditFragment"
+            tools:layout="@layout/text_note_edit_fragment">
         <argument
                 android:name="noteId"
                 android:defaultValue="-1L"
                 app:argType="long" />
+    </fragment>
+    <fragment
+            android:id="@+id/checkableListNoteEditFragment"
+            android:name="com.amjad.opennote.ui.fragments.CheckableListNoteEditFragment"
+            android:label="CheckableListNoteEditFragment">
+        <argument
+                android:name="noteId"
+                app:argType="long"
+                android:defaultValue="-1L" />
     </fragment>
 </navigation>

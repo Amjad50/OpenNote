@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/speed_dial_add_list_note"
+            android:title="@string/new_list_note"
+            android:icon="@drawable/ic_check_box" />
+</menu>
