@@ -11,7 +11,8 @@ fun requestFocusAndShowKeyboard(view: View, context: Context?) {
         context?.also {
             val inputMethodManager =
                 ContextCompat.getSystemService(it, InputMethodManager::class.java)
-            inputMethodManager?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, -1)
+            if (inputMethodManager?.isAcceptingText != true)
+                inputMethodManager?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, -1)
         }
 }
 
