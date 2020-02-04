@@ -9,6 +9,7 @@
         <item name="android:textAlignment">gravity</item>
         <item name="android:textDirection">firstStrongLtr</item>
         <item name="actionModeCloseDrawable">@drawable/ic_close_x</item>
+        <item name="android:imeOptions">flagNoExtractUi</item>
     </style>
 
 </resources>
