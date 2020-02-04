@@ -1,8 +1,10 @@
 package com.amjad.opennote.ui.adapters
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.R
 import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.data.entities.NoteType
-import com.amjad.opennote.databinding.CheckablelistNoteItemViewBinding
 import com.amjad.opennote.databinding.CheckablelistNoteViewBinding
 import com.amjad.opennote.databinding.NoteitemViewBinding
 import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
@@ -117,14 +118,17 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
                 val numberNotToView = unchecked - numberToView
 
                 listContainer.removeAllViews()
-                // FIXME: MAJOR performance issue in here
                 for (i in 0 until numberToView)
                     listContainer.addView(
-                        CheckablelistNoteItemViewBinding.inflate(
-                            LayoutInflater.from(listContainer.context),
-                            listContainer,
-                            false
-                        ).apply { itemText = notelist[i].text }.root
+                        CheckBox(listContainer.context).apply {
+                            text = notelist[i].text
+                            setTextColor(0x8a000000.toInt())
+                            setButtonDrawable(R.drawable.ic_check_box_unchecked_for_notelist_item)
+                            isEnabled = false
+                            gravity = Gravity.START
+                            isFocusable = false
+                            isClickable = false
+                        }
                     )
 
                 if (numberNotToView > 0)
