@@ -95,10 +95,15 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
                 viewModel.selectNextListItem = false
             }
 
-
             binding.setOnDelete {
                 (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(item.position)
                 viewModel.notifyNoteUpdated()
+            }
+
+            binding.textEdit.apply {
+                // for some reason, this value will not be applied if it was set from xml
+                setHorizontallyScrolling(false)
+                maxLines = Int.MAX_VALUE
             }
         }
     }
