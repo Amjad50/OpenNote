@@ -6,12 +6,12 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 
 
-fun requestFocusAndShowKeyboard(view: View, context: Context?) {
+fun requestFocusAndShowKeyboard(view: View, context: Context?, forceToggle: Boolean = false) {
     if (view.requestFocusFromTouch())
         context?.also {
             val inputMethodManager =
                 ContextCompat.getSystemService(it, InputMethodManager::class.java)
-            if (inputMethodManager?.isAcceptingText != true)
+            if (inputMethodManager?.isAcceptingText != true || forceToggle)
                 inputMethodManager?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, -1)
         }
 }

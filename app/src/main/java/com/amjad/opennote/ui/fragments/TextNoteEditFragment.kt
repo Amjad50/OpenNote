@@ -39,6 +39,16 @@ class TextNoteEditFragment : BaseNoteEditFragment() {
 
         setupScrollViewShadowsEffect()
 
+        binding.outsideNoteClickView.setOnClickListener {
+            // FIXME: if the user clicks more than once, it will toggle
+            // TODO: find why it does not show keyboard normally
+            requestFocusAndShowKeyboard(binding.noteEdit, context, forceToggle = true)
+            binding.noteEdit.run {
+                // move selection to the end (cursor)
+                setSelection(text?.length ?: 0)
+            }
+        }
+
         return binding.root
     }
 
