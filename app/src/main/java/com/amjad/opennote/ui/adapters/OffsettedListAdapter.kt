@@ -17,12 +17,11 @@ abstract class OffsettedListAdapter<T, VH : RecyclerView.ViewHolder>(
         get() = mDiffer.currentList
 
     override fun getItemViewType(position: Int): Int {
-        return if (position < headerOffset)
-            VIEWTYPE_HEADER
-        else if (position >= (itemCount - footerOffset))
-            VIEWTYPE_FOOTER
-        else
-            VIEWTYPE_LIST_ITEM
+        return when {
+            position < headerOffset -> VIEWTYPE_HEADER
+            position >= (itemCount - footerOffset) -> VIEWTYPE_FOOTER
+            else -> VIEWTYPE_LIST_ITEM
+        }
     }
 
     fun submitList(newList: List<T>) {

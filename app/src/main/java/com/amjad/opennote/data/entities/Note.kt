@@ -46,10 +46,10 @@ open class Note(
      * @return the subclassed object based on the value of type
      */
     fun getNoteBasedOnType(): Note {
-        if (type == NoteType.CHECKABLE_LIST_NOTE)
-            return getCheckableListNote()
+        return if (type == NoteType.CHECKABLE_LIST_NOTE)
+            getCheckableListNote()
         else
-            return this
+            this
     }
 
     override fun toString(): String {
