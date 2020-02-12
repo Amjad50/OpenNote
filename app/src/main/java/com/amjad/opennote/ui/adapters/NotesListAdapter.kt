@@ -125,7 +125,8 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
                 if (numberNotToView > 0)
                     addView(
                         TextView(binding.root.context).apply {
-                            text = context.getString(R.string.checked_items_count, numberNotToView)
+                            text =
+                                context.getString(R.string.unchecked_items_count, numberNotToView)
                         }
                     )
                 if (checked > 0)
