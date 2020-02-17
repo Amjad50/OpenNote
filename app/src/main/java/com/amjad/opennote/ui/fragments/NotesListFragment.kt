@@ -6,7 +6,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.amjad.opennote.R
 import com.amjad.opennote.databinding.NotesListFragmentBinding
@@ -26,7 +26,7 @@ class NotesListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this)[NoteListViewModel::class.java]
+        viewModel = ViewModelProvider(this)[NoteListViewModel::class.java]
 
         setHasOptionsMenu(true)
     }

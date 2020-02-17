@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
@@ -22,7 +22,7 @@ abstract class BaseNoteEditFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this)[NoteEditViewModel::class.java]
+        viewModel = ViewModelProvider(this)[NoteEditViewModel::class.java]
 
         setHasOptionsMenu(true)
     }
