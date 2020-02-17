@@ -1,5 +1,6 @@
 package com.amjad.opennote.ui.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -37,7 +38,11 @@ class NotesListFragment : Fragment() {
     ): View {
         binding = NotesListFragmentBinding.inflate(inflater, container, false)
 
-        adapter = NotesListAdapter(viewModel.selector)
+        adapter = NotesListAdapter(
+            viewModel.selector,
+            // CYAN is the closest to the default accent color
+            context?.getColor(R.color.colorAccent) ?: Color.CYAN
+        )
         binding.noteslistview.adapter = adapter
         binding.noteslistview.emptyView = binding.emptyView
 
@@ -71,6 +76,10 @@ class NotesListFragment : Fragment() {
     private fun observersInit(adapter: NotesListAdapter) {
         viewModel.filteredAllNotes.observe(viewLifecycleOwner, Observer { notes ->
             adapter.submitList(notes)
+
+            // update filter here as it will change together with the filtered list
+            // so, there is no need to listen to changes in the filter string
+            adapter.updateFilter(viewModel.getNotesListFilter())
         })
     }
 

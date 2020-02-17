@@ -1,6 +1,9 @@
 package com.amjad.opennote.ui.adapters
 
+import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextUtils
+import android.text.style.BackgroundColorSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,8 +21,13 @@ import com.amjad.opennote.databinding.NoteitemViewBinding
 import com.amjad.opennote.ui.fragments.NotesListFragmentDirections
 import kotlin.math.min
 
-class NotesListAdapter(private val selector: NoteListSelector<Long>) :
+class NotesListAdapter(
+    private val selector: NoteListSelector<Long>,
+    private val highlightColor: Int
+) :
     ListAdapter<Note, NotesListAdapter.NoteViewHolder>(NoteListDiffItemCallBack()) {
+
+    private var currentFilter = ""
 
     init {
         setHasStableIds(true)
@@ -45,10 +53,18 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
         holder.bind(getItem(position))
     }
 
+    fun updateFilter(filter: String) {
+        currentFilter = filter
+        // update every item
+        notifyDataSetChanged()
+    }
+
     inner class NoteViewHolder(private val binding: NoteitemViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
             binding.apply {
+
+                noteTitleView.text = getSpannedText(note.title, currentFilter)
 
                 // clear views
                 binding.innerNoteContainer.removeAllViews()
@@ -112,7 +128,8 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
                 for (i in 0 until numberToView)
                     addView(
                         CheckBox(context).apply {
-                            text = notelist[i].text
+                            // TODO: show the items in the list that match the search
+                            text = getSpannedText(notelist[i].text, currentFilter)
                             setTextColor(0x8a000000.toInt())
                             setButtonDrawable(R.drawable.ic_check_box_unchecked_for_notelist_item)
                             isEnabled = false
@@ -145,10 +162,32 @@ class NotesListAdapter(private val selector: NoteListSelector<Long>) :
                     TextView(context).apply {
                         ellipsize = TextUtils.TruncateAt.END
                         maxLines = 5
-                        text = note.note
-                    }
-                )
+                        text = getSpannedText(note.note, currentFilter)
+                    })
             }
+        }
+
+        // FIXME: slow algorithm to compute the spans
+        private fun getSpannedText(string: String, filter: String): SpannableString {
+            val spannedNote = SpannableString(string)
+            if (filter.isNotEmpty()) {
+                var lastIndex = -1
+
+                do {
+                    lastIndex = spannedNote.indexOf(filter, lastIndex + 1, true)
+
+                    if (lastIndex == -1)
+                        break
+
+                    spannedNote.setSpan(
+                        BackgroundColorSpan(highlightColor),
+                        lastIndex,
+                        lastIndex + currentFilter.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                } while (true)
+            }
+            return spannedNote
         }
     }
 }
