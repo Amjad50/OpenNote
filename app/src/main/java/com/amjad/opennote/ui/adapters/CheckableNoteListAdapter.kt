@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.amjad.opennote.R
 import com.amjad.opennote.data.entities.CheckableListNote
 import com.amjad.opennote.databinding.CheckableAddNewItemViewBinding
 import com.amjad.opennote.databinding.CheckableNoteItemBinding
 import com.amjad.opennote.databinding.CheckableTitleItemBinding
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
 import com.amjad.opennote.utils.requestFocusAndShowKeyboard
+import com.google.android.material.snackbar.Snackbar
 
 class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     OffsettedListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
@@ -96,7 +98,21 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             }
 
             binding.setOnDelete {
-                (viewModel.note.value as CheckableListNote?)?.noteList?.removeAt(item.position)
+                val notelist = (viewModel.note.value as CheckableListNote?)?.noteList
+                val saved_position = item.position
+                val saved_list_item = notelist?.removeAt(saved_position)
+
+                Snackbar.make(
+                    binding.root,
+                    "Deleted list item",
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.undo) {
+                        if (saved_list_item != null) {
+                            notelist.add(saved_position, saved_list_item)
+                            viewModel.notifyNoteUpdated()
+                        }
+                    }.show()
                 viewModel.notifyNoteUpdated()
             }
 
@@ -120,7 +136,6 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
 
         fun bind() {
             binding.setOnAddNewNote {
-                // TODO: make it auto focus to type immediately
                 (viewModel.note.value as CheckableListNote?)?.noteList?.add(CheckableListNote.Item())
                 viewModel.selectNextListItem = true
                 viewModel.notifyNoteUpdated()
