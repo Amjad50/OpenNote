@@ -129,7 +129,16 @@ class NotesListAdapter(
                     addView(
                         CheckBox(context).apply {
                             // TODO: show the items in the list that match the search
-                            text = getSpannedText(notelist[i].text, currentFilter)
+
+                            // FIXME: This is a feature, start with 'x' if you want to match
+                            //  CheckableNoteList only, but u need to use the first part of the
+                            //  list item, BUG -> FEATURE
+                            val filter = if (currentFilter.startsWith('x', true))
+                                currentFilter.substring(1)
+                            else
+                                currentFilter
+
+                            text = getSpannedText(notelist[i].text, filter)
                             setTextColor(0x8a000000.toInt())
                             setButtonDrawable(R.drawable.ic_check_box_unchecked_for_notelist_item)
                             isEnabled = false
@@ -182,7 +191,7 @@ class NotesListAdapter(
                     spannedNote.setSpan(
                         BackgroundColorSpan(highlightColor),
                         lastIndex,
-                        lastIndex + currentFilter.length,
+                        lastIndex + filter.length,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 } while (true)
