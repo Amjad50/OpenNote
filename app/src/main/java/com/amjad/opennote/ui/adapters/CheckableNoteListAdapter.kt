@@ -1,9 +1,11 @@
 package com.amjad.opennote.ui.adapters
 
 import android.graphics.Paint
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.R
@@ -120,6 +122,24 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
                 // for some reason, this value will not be applied if it was set from xml
                 setHorizontallyScrolling(false)
                 maxLines = Int.MAX_VALUE
+
+                // FIXME: change the icon to ENTER icon
+                imeOptions = EditorInfo.IME_ACTION_DONE
+
+                setOnEditorActionListener { _, actionId, event ->
+                    if ((event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || actionId == EditorInfo.IME_ACTION_NEXT
+                    ) {
+                        (viewModel.note.value as CheckableListNote?)?.noteList?.add(
+                            item.position + 1,
+                            CheckableListNote.Item()
+                        )
+                        viewModel.selectNextListItem = true
+                        viewModel.notifyNoteUpdated()
+                    }
+                    true
+                }
             }
         }
     }
