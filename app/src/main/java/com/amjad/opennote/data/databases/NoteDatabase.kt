@@ -12,7 +12,7 @@ import com.amjad.opennote.data.converters.NoteTypeConverters
 import com.amjad.opennote.data.daos.NoteDao
 import com.amjad.opennote.data.entities.Note
 
-@Database(entities = [Note::class], version = 3, exportSchema = false)
+@Database(entities = [Note::class], version = 4, exportSchema = false)
 @TypeConverters(DataConverters::class, NoteTypeConverters::class)
 abstract class NoteDatabase : RoomDatabase() {
 
@@ -52,6 +52,12 @@ abstract class NoteDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE note_table ADD COLUMN images TEXT NOT NULL DEFAULT \"\"")
+            }
+        }
+
         fun getDatabase(context: Context): NoteDatabase {
             val tempInstance =
                 INSTANCE
@@ -63,7 +69,7 @@ abstract class NoteDatabase : RoomDatabase() {
                     context.applicationContext,
                     NoteDatabase::class.java,
                     "word_database"
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                     .build()
                 INSTANCE = instance
                 return instance

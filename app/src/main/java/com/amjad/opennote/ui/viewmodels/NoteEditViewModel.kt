@@ -79,6 +79,12 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
         updateCurrentNote()
     }
 
+    fun addImage(uuid: String) {
+        note.value?.addImage(uuid)
+        // TODO: when implementing images view, check which is better, to update DB or just notify
+        notifyNoteUpdated()
+    }
+
     class StatusAndActionBarStyles {
         var saved: Boolean = false
         var background: Int = 0

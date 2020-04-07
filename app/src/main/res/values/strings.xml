@@ -29,4 +29,5 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="add_new_note_checkable_note_list">Add Note</string>
     <string name="unchecked_items_count">+ %1$d unchecked items</string>
     <string name="checked_items_count">+ %1$d checked items</string>
+    <string name="menu_add_image">Add Image</string>
 </resources>

@@ -17,7 +17,8 @@ open class Note(
     @ColumnInfo(name = "id")
     var id: Long = 0
 ) {
-
+    // FIXME: find a way to make this uneditable by users only room
+    var images: String = ""
     var type: NoteType = NoteType.TEXT_NOTE
 
     fun getFormattedDate(): String {
@@ -39,7 +40,7 @@ open class Note(
             date,
             color,
             id
-        )
+        ).apply { images = this@Note.images }
     }
 
     /**
@@ -50,6 +51,16 @@ open class Note(
             getCheckableListNote()
         else
             this
+    }
+
+    fun addImage(uuid: String) {
+        images += "$uuid,"
+    }
+
+    fun removeImage(uuid: String) {
+        val index = images.indexOf(uuid)
+        if (index != -1)
+            images = images.removeRange(index, index + uuid.length + 1)
     }
 
     override fun toString(): String {

@@ -6,4 +6,9 @@
             android:icon="@drawable/ic_colors"
             android:title="@string/menu_color"
             app:showAsAction="ifRoom" />
+    <item
+            android:id="@+id/edit_menu_add_image_action"
+            android:icon="@drawable/ic_image"
+            android:title="@string/menu_add_image"
+            app:showAsAction="ifRoom" />
 </menu>
