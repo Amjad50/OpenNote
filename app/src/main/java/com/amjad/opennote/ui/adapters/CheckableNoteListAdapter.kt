@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.R
 import com.amjad.opennote.data.entities.CheckableListNote
 import com.amjad.opennote.databinding.CheckableAddNewItemViewBinding
+import com.amjad.opennote.databinding.CheckableImageItemBinding
 import com.amjad.opennote.databinding.CheckableNoteItemBinding
 import com.amjad.opennote.databinding.CheckableTitleItemBinding
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
@@ -19,7 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     OffsettedListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
-        CheckableNoteListDiffItemCallBack(), 1, 1
+        CheckableNoteListDiffItemCallBack(), 1, 1, 1
     ) {
 
     override fun onCreateViewHolder(
@@ -29,6 +30,13 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
         return when (viewType) {
             VIEWTYPE_HEADER -> TitleNoteItemViewHolder(
                 CheckableTitleItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            VIEWTYPE_HEADER_IMAGE -> ImageNoteViewHolder(
+                CheckableImageItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -64,10 +72,18 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             is TitleNoteItemViewHolder -> {
                 holder.bind(viewModel)
             }
+            is ImageNoteViewHolder -> {
+                holder.bind(viewModel)
+            }
             is AddNewItemViewHolder -> {
                 holder.bind()
             }
         }
+    }
+
+    fun refreshImage() {
+        if (headerImageOffset > 0)
+            notifyItemRangeChanged(0, headerImageOffset)
     }
 
     private inner class CheckableListNoteItemViewHolder(private val binding: CheckableNoteItemBinding) :
@@ -145,6 +161,13 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     }
 
     private class TitleNoteItemViewHolder(private val binding: CheckableTitleItemBinding) :
+        BaseCheckableNoteItemViewHolder(binding.root) {
+        fun bind(viewModel: NoteEditViewModel) {
+            binding.model = viewModel
+        }
+    }
+
+    private class ImageNoteViewHolder(private val binding: CheckableImageItemBinding) :
         BaseCheckableNoteItemViewHolder(binding.root) {
         fun bind(viewModel: NoteEditViewModel) {
             binding.model = viewModel

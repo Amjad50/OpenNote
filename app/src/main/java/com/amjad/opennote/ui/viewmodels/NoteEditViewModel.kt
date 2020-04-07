@@ -100,10 +100,12 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
         @JvmStatic
         @BindingAdapter("noteImage")
         fun loadImage(view: ImageView, uuid: String?) {
-            val image = File(view.context.filesDir, "images/$uuid.png")
-            Glide.with(view.context)
-                .load(image)
-                .into(view);
+            if (!uuid.isNullOrBlank()) {
+                val image = File(view.context.filesDir, "images/$uuid.png")
+                Glide.with(view.context)
+                    .load(image)
+                    .into(view)
+            }
         }
     }
 }
