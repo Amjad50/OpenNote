@@ -43,6 +43,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+            <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/note_image_description"
+                    android:paddingBottom="8dp"
+                    android:visibility="@{note.lastImage.empty ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:noteImage="@{note.lastImage}"
+                    tools:srcCompat="@drawable/ic_launcher_icon_foreground" />
+
             <TextView
                     android:id="@+id/note_title_view"
                     android:layout_width="0dp"
@@ -54,7 +67,7 @@
                     android:visibility="@{note.title.empty ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/image"
                     tools:text="Note title" />
 
             <LinearLayout
