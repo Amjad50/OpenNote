@@ -39,8 +39,9 @@
         <ScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_weight="1"
+                android:fillViewport="true"
                 app:layout_constraintBottom_toTopOf="@id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,12 +52,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="8dp"
+                        android:contentDescription="@string/note_image_description"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:noteImage="@{model.note.lastImage}"
+                        tools:srcCompat="@drawable/ic_launcher_icon_foreground" />
+
                 <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/title_edit"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
                         android:background="@null"
                         android:ems="10"
@@ -67,7 +82,7 @@
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/image" />
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_edit"
@@ -85,17 +100,17 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/title_edit" />
+
+                <View
+                        android:id="@+id/outside_note_click_view"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/note_edit" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-
-        <View
-                android:id="@+id/outside_note_click_view"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@id/textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/scrollView" />
 
         <View
                 android:id="@+id/view"
@@ -106,7 +121,6 @@
                 app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
 
         <TextView
                 android:id="@+id/textView"

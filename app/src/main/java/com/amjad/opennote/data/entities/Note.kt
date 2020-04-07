@@ -63,6 +63,15 @@ open class Note(
             images = images.removeRange(index, index + uuid.length + 1)
     }
 
+    fun getLastImage(): String {
+        if (images.isNotEmpty())
+            return images.substring(
+                images.lastIndexOf(',', images.length - 2) + 1,
+                images.length - 1
+            )
+        return ""
+    }
+
     override fun toString(): String {
         return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id)"
     }

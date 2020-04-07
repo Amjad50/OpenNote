@@ -1,13 +1,17 @@
 package com.amjad.opennote.ui.viewmodels
 
 import android.app.Application
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.repositories.NotesRepository
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 
 class NoteEditViewModel(application: Application) : AndroidViewModel(application) {
@@ -90,5 +94,16 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
         var background: Int = 0
         var elevation: Float = 0f
         var statusBarColor: Int = 0
+    }
+
+    companion object {
+        @JvmStatic
+        @BindingAdapter("noteImage")
+        fun loadImage(view: ImageView, uuid: String?) {
+            val image = File(view.context.filesDir, "images/$uuid.png")
+            Glide.with(view.context)
+                .load(image)
+                .into(view);
+        }
     }
 }
