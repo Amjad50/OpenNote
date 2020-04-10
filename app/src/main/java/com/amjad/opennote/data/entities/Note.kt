@@ -1,11 +1,15 @@
 package com.amjad.opennote.data.entities
 
 import android.graphics.Color
+import android.util.Base64
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.amjad.opennote.data.converters.DataConverters
+import com.amjad.opennote.data.converters.NoteTypeConverters
 import java.text.DateFormat
 import java.util.*
+import kotlin.text.Charsets.UTF_8
 
 @Entity(tableName = "note_table")
 open class Note(
@@ -76,12 +80,50 @@ open class Note(
         return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id)"
     }
 
+    fun getSerializedStringArray(): Array<String> {
+        return arrayOf(
+            id.toString(),
+            title,
+            encodeNote(note),
+            DataConverters().dateToTimestamp(date).toString(),
+            color.toString(),
+            NoteTypeConverters().typeToTypeCode(type).toString(),
+            images
+        )
+    }
+
     companion object {
         fun createNoteBasedOnType(type: NoteType): Note {
             return when (type) {
                 NoteType.UNDEFINED_TYPE -> Note()
                 NoteType.TEXT_NOTE -> Note()
                 NoteType.CHECKABLE_LIST_NOTE -> CheckableListNote()
+            }
+        }
+
+        fun encodeNote(note: String): String {
+            return Base64.encodeToString(note.toByteArray(UTF_8), Base64.DEFAULT)
+        }
+
+        fun decodeNote(base64: String): String {
+            return Base64.decode(base64, Base64.DEFAULT).toString(UTF_8)
+        }
+
+        fun serializedStringHeaderArray(): Array<String> {
+            return arrayOf("id", "title", "note", "date", "color", "type", "images")
+        }
+
+        fun deserializeStringArray(array: Array<String>): Note {
+            // FIXME: add private constructor to add all in one go
+            return Note(
+                id = array[0].toLong(),
+                title = array[1],
+                note = decodeNote(array[2]), date =
+                DataConverters().fromTimestamp(array[3].toLong()),
+                color = array[4].toInt()
+            ).apply {
+                type = NoteTypeConverters().fromTypeCode(array[5].toInt())
+                images = array[6]
             }
         }
     }

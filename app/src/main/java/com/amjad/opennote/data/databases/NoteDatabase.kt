@@ -1,6 +1,7 @@
 package com.amjad.opennote.data.databases
 
 import android.content.Context
+import androidx.lifecycle.Observer
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -11,12 +12,65 @@ import com.amjad.opennote.data.converters.DataConverters
 import com.amjad.opennote.data.converters.NoteTypeConverters
 import com.amjad.opennote.data.daos.NoteDao
 import com.amjad.opennote.data.entities.Note
+import com.opencsv.CSVReader
+import com.opencsv.CSVWriter
+import kotlinx.coroutines.runBlocking
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 @Database(entities = [Note::class], version = 4, exportSchema = false)
 @TypeConverters(DataConverters::class, NoteTypeConverters::class)
 abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
+
+    // FIXME: change to concurrent or async code
+    fun saveDatabase(outstream: OutputStream) {
+        val noteslivedata = noteDao().getAllNotes()
+
+        val latch = CountDownLatch(1)
+
+        val observer = object : Observer<List<Note>> {
+            override fun onChanged(notes: List<Note>?) {
+                val csv_writer = CSVWriter(outstream.writer())
+                csv_writer.writeNext(Note.serializedStringHeaderArray())
+                val serializedNotes = notes?.map { note ->
+                    note.getSerializedStringArray()
+                }
+
+                csv_writer.writeAll(serializedNotes)
+                csv_writer.close()
+
+                // remove the observer as we are done here
+                noteslivedata.removeObserver(this)
+                latch.countDown()
+            }
+        }
+
+        noteslivedata.observeForever(observer)
+        latch.await(5, TimeUnit.SECONDS)
+    }
+
+    // FIXME: change to concurrent or async code
+    fun restoreDatabase(instream: InputStream) {
+        val csv_reader = CSVReader(instream.reader())
+        // Ignore the header
+        csv_reader.readNext()
+
+        val allNotes = csv_reader.readAll().map {
+            Note.deserializeStringArray(it)
+        }
+
+        csv_reader.close()
+
+        runBlocking {
+            allNotes.forEach {
+                noteDao().insert(it)
+            }
+        }
+    }
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

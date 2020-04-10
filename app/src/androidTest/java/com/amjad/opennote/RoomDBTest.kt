@@ -21,10 +21,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.text.Charsets.UTF_8
 
 @RunWith(AndroidJUnit4::class)
 class RoomDBTest {
@@ -357,6 +360,65 @@ class RoomDBTest {
         assertTrue(noteForthTime?.noteList?.get(6)?.isChecked!!)
 
         assertEquals(1L, noteForthTime?.id)
+    }
+
+    @Test
+    fun serializeNoteDBTest() {
+        runBlocking {
+            noteDao.insert(TESTING_NOTE.getNoteObject())
+            noteDao.insert(TESTING_LIST_NOTE.getNoteObject())
+        }
+
+        val outstream = ByteArrayOutputStream(256)
+
+        database.saveDatabase(outstream)
+        log(outstream.toByteArray().toString(UTF_8))
+
+        runBlocking {
+            noteDao.deleteAll()
+        }
+
+        val instream = ByteArrayInputStream(outstream.toByteArray())
+
+        database.restoreDatabase(instream)
+
+        val notes = noteDao.getAllNotes().blockingObserve()
+
+        log("$notes")
+
+        assertEquals(2, notes?.size)
+        val textNote =
+            (if (notes?.get(0)?.type == NoteType.TEXT_NOTE) notes[0] else notes?.get(1))?.getNoteBasedOnType()
+        val taskNote =
+            (if (notes?.get(0)?.type == NoteType.CHECKABLE_LIST_NOTE) notes[0] else notes?.get(1))?.getNoteBasedOnType()
+
+        log("$textNote")
+        log("$taskNote")
+
+        assertEquals(TESTING_NOTE.date, textNote?.date)
+        assertEquals(TESTING_NOTE.title, textNote?.title)
+        assertEquals(TESTING_NOTE.note, textNote?.note)
+        assertEquals(TESTING_NOTE.color, textNote?.color)
+
+        if (taskNote !is CheckableListNote?) {
+            // this is used to enable smart cast below for (taskNote?.noteList)
+            assertTrue(false)
+        } else {
+            assertEquals(TESTING_LIST_NOTE.title, taskNote?.title)
+            assertEquals(TESTING_LIST_NOTE.color, taskNote?.color)
+            assertEquals(
+                TESTING_LIST_NOTE.noteList.map { it.text },
+                taskNote?.noteList?.map { it.text })
+            assertEquals(
+                TESTING_LIST_NOTE.noteList.map { it.isChecked },
+                taskNote?.noteList?.map { it.isChecked })
+        }
+
+
+        // clear
+        runBlocking {
+            noteDao.deleteAll()
+        }
     }
 
 
