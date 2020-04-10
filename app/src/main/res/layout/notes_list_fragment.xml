@@ -20,7 +20,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:spanCount="2"
+                app:spanCount="@integer/noteslist_col_count"
                 tools:listitem="@layout/noteitem_view" />
 
         <include
