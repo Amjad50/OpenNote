@@ -380,7 +380,11 @@ class RoomDBTest {
 
         val instream = ByteArrayInputStream(outstream.toByteArray())
 
+        outstream.close()
+
         database.restoreDatabase(instream)
+
+        instream.close()
 
         val notes = noteDao.getAllNotes().blockingObserve()
 
