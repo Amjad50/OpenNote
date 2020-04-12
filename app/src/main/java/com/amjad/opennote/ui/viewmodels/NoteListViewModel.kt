@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -94,7 +95,9 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
             }
         }
 
-    fun deleteAll() = GlobalScope.launch {
+    fun deleteAll(context: Context) = GlobalScope.launch {
+        val imagesFile = File(context.filesDir, "images")
+        imagesFile.deleteRecursively()
         repository.deleteAll()
     }
 }

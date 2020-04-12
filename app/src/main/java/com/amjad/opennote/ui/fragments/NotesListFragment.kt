@@ -194,7 +194,9 @@ class NotesListFragment : Fragment() {
                 true
             }
             R.id.menu_delete_database -> {
-                viewModel.deleteAll()
+                context?.also {
+                    viewModel.deleteAll(it)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
