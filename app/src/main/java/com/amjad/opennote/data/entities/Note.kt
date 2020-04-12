@@ -80,7 +80,7 @@ open class Note(
         return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id)"
     }
 
-    fun getSerializedStringArray(): Array<String> {
+    fun getSerializedStringArray(imagesCallback: (Array<String>) -> String): Array<String> {
         return arrayOf(
             id.toString(),
             title,
@@ -88,8 +88,16 @@ open class Note(
             DataConverters().dateToTimestamp(date).toString(),
             color.toString(),
             NoteTypeConverters().typeToTypeCode(type).toString(),
-            images
+            imagesCallback(getAllImages())
         )
+    }
+
+    fun getAllImages(): Array<String> {
+        if (images.isBlank())
+            return arrayOf()
+        val imagesList = images.split(",")
+
+        return imagesList.subList(0, imagesList.size - 1).toTypedArray()
     }
 
     companion object {
@@ -113,7 +121,7 @@ open class Note(
             return arrayOf("id", "title", "note", "date", "color", "type", "images")
         }
 
-        fun deserializeStringArray(array: Array<String>): Note {
+        fun deserializeStringArray(array: Array<String>, imagesCallback: (String) -> String): Note {
             // FIXME: add private constructor to add all in one go
             return Note(
                 id = array[0].toLong(),
@@ -123,7 +131,7 @@ open class Note(
                 color = array[4].toInt()
             ).apply {
                 type = NoteTypeConverters().fromTypeCode(array[5].toInt())
-                images = array[6]
+                images = imagesCallback(array[6])
             }
         }
     }

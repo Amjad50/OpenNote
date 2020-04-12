@@ -1,6 +1,8 @@
 package com.amjad.opennote.data.databases
 
 import android.content.Context
+import android.util.Base64
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -14,9 +16,10 @@ import com.amjad.opennote.data.entities.Note
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
+import java.util.*
 
 @Database(entities = [Note::class], version = 4, exportSchema = false)
 @TypeConverters(DataConverters::class, NoteTypeConverters::class)
@@ -24,36 +27,89 @@ abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
 
-    suspend fun saveDatabase(outstream: OutputStream) {
+    // TODO: move base64 conversion to somewhere else, maybe Note class
+    private suspend fun imageToBase64(file: File): String {
+        return withContext(Dispatchers.IO) {
+            val instream = FileInputStream(file)
+            val data = instream.use {
+                it.readBytes()
+            }
+            // NO_WRAP is super important when reading it later, when using wrapping
+            // with large files, like images it will take a very long time reading the
+            // base64 string. And also this way, less bytes as we remove newline bytes.
+            Base64.encodeToString(data, Base64.NO_WRAP)
+        }
+    }
+
+    private suspend fun base64ToImage(base64: String, file: File) {
+        return withContext(Dispatchers.IO) {
+            val outstream = FileOutputStream(file)
+            outstream.use {
+                it.write(Base64.decode(base64, Base64.NO_WRAP))
+            }
+        }
+    }
+
+    suspend fun saveDatabase(context: Context, outstream: OutputStream) {
         withContext(Dispatchers.IO) {
             val notes = noteDao().getAllNotesAsync()
+            val imagesFile = File(context.filesDir, "images")
 
             val csv_writer = CSVWriter(outstream.writer())
             csv_writer.writeNext(Note.serializedStringHeaderArray())
-            val serializedNotes = notes.map { note ->
-                note.getSerializedStringArray()
+            notes.forEach { note ->
+                val serializedNote = note.getSerializedStringArray { images ->
+                    val imagesBase64 = images.map { image ->
+                        runBlocking {
+                            imageToBase64(File(imagesFile, "$image.png"))
+                        }
+                    }
+                    imagesBase64.joinToString("|")
+                }
+
+                csv_writer.writeNext(serializedNote)
             }
 
-            csv_writer.writeAll(serializedNotes)
             csv_writer.close()
         }
     }
 
-    suspend fun restoreDatabase(instream: InputStream) {
+    suspend fun restoreDatabase(context: Context, instream: InputStream) {
         withContext(Dispatchers.IO) {
             val csv_reader = CSVReader(instream.reader())
+            val imagesFile = File(context.filesDir, "images")
+
+            imagesFile.mkdir()
+
             // Ignore the header
             csv_reader.readNext()
 
-            val allNotes = csv_reader.readAll().map {
-                Note.deserializeStringArray(it)
+            while (true) {
+                val serializedNote = csv_reader.readNext()
+                if (serializedNote == null)
+                    break
+
+                Log.i("BB", serializedNote.toList().toString())
+
+                val note = Note.deserializeStringArray(serializedNote) { images ->
+                    val uuids = images.split("|").map { base64 ->
+
+                        val uuid = UUID.randomUUID().toString()
+
+                        val savedImage = File(imagesFile, "$uuid.png")
+                        runBlocking {
+                            base64ToImage(base64, savedImage)
+                        }
+                        uuid
+                    }
+
+                    uuids.joinToString(separator = ",", postfix = ",")
+                }
+
+                noteDao().insert(note)
             }
 
             csv_reader.close()
-
-            allNotes.forEach {
-                noteDao().insert(it)
-            }
         }
     }
 

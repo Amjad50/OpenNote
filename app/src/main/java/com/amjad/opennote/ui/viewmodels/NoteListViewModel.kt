@@ -1,6 +1,7 @@
 package com.amjad.opennote.ui.viewmodels
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.*
 import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
@@ -73,23 +74,25 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
         repository.updateNotesColor(notesIds, color)
     }
 
-    fun backupDatabase(outputStream: OutputStream, callback: () -> Unit) = GlobalScope.launch {
-        val result = async(Dispatchers.Main) {
-            database.saveDatabase(outputStream)
+    fun backupDatabase(context: Context, outputStream: OutputStream, callback: () -> Unit) =
+        GlobalScope.launch {
+            val result = async(Dispatchers.Main) {
+                database.saveDatabase(context, outputStream)
+            }
+            result.invokeOnCompletion {
+                callback()
+            }
         }
-        result.invokeOnCompletion {
-            callback()
-        }
-    }
 
-    fun restoreDatabase(inputStream: InputStream, callback: () -> Unit) = GlobalScope.launch {
-        val result = async(Dispatchers.Main) {
-            database.restoreDatabase(inputStream)
+    fun restoreDatabase(context: Context, inputStream: InputStream, callback: () -> Unit) =
+        GlobalScope.launch {
+            val result = async(Dispatchers.Main) {
+                database.restoreDatabase(context, inputStream)
+            }
+            result.invokeOnCompletion {
+                callback()
+            }
         }
-        result.invokeOnCompletion {
-            callback()
-        }
-    }
 
     fun deleteAll() = GlobalScope.launch {
         repository.deleteAll()

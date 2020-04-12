@@ -364,6 +364,7 @@ class RoomDBTest {
 
     @Test
     fun serializeNoteDBTest() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         runBlocking {
             noteDao.insert(TESTING_NOTE.getNoteObject())
             noteDao.insert(TESTING_LIST_NOTE.getNoteObject())
@@ -372,7 +373,7 @@ class RoomDBTest {
         val outstream = ByteArrayOutputStream(256)
 
         runBlocking {
-            database.saveDatabase(outstream)
+            database.saveDatabase(context, outstream)
         }
 
         log(outstream.toByteArray().toString(UTF_8))
@@ -386,7 +387,7 @@ class RoomDBTest {
         outstream.close()
 
         runBlocking {
-            database.restoreDatabase(instream)
+            database.restoreDatabase(context, instream)
         }
 
         instream.close()

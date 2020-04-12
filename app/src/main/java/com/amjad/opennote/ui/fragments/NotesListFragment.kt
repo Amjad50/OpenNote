@@ -172,20 +172,24 @@ class NotesListFragment : Fragment() {
         return when (item.itemId) {
             // TODO: ask the user for a file to backup/restore to/from
             R.id.menu_backup_database -> {
-                val file = File(context!!.filesDir, "backup")
-                val outstream = FileOutputStream(file)
+                context?.also { context ->
+                    val file = File(context.filesDir, "backup")
+                    val outstream = FileOutputStream(file)
 
-                viewModel.backupDatabase(outstream) {
-                    Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
+                    viewModel.backupDatabase(context, outstream) {
+                        Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
+                    }
                 }
                 true
             }
             R.id.menu_restore_database -> {
-                val file = File(context!!.filesDir, "backup")
-                val instream = FileInputStream(file)
+                context?.also { context ->
+                    val file = File(context.filesDir, "backup")
+                    val instream = FileInputStream(file)
 
-                viewModel.restoreDatabase(instream) {
-                    Toast.makeText(context, "RESTORE DONE", Toast.LENGTH_LONG).show()
+                    viewModel.restoreDatabase(context, instream) {
+                        Toast.makeText(context, "RESTORE DONE", Toast.LENGTH_LONG).show()
+                    }
                 }
                 true
             }
