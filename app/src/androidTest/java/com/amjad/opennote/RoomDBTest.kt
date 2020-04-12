@@ -371,7 +371,10 @@ class RoomDBTest {
 
         val outstream = ByteArrayOutputStream(256)
 
-        database.saveDatabase(outstream)
+        runBlocking {
+            database.saveDatabase(outstream)
+        }
+
         log(outstream.toByteArray().toString(UTF_8))
 
         runBlocking {
@@ -382,7 +385,9 @@ class RoomDBTest {
 
         outstream.close()
 
-        database.restoreDatabase(instream)
+        runBlocking {
+            database.restoreDatabase(instream)
+        }
 
         instream.close()
 
