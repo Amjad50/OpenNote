@@ -30,4 +30,8 @@ class NotesRepository(private val noteDao: NoteDao) {
     suspend fun updateNotesColor(notesIds: List<Long>, color: Int) {
         noteDao.updateNotesColor(notesIds, color)
     }
+
+    suspend fun deleteAll() {
+        noteDao.deleteAll()
+    }
 }

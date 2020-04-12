@@ -31,4 +31,7 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="checked_items_count">+ %1$d checked items</string>
     <string name="menu_add_image">Add Image</string>
     <string name="note_image_description">Note image</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
+    <string name="delete_all">Delete All</string>
 </resources>

@@ -6,11 +6,17 @@ import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.repositories.NotesRepository
 import com.amjad.opennote.ui.adapters.NoteListSelector
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
 class NoteListViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val database: NoteDatabase
     private val repository: NotesRepository
 
     private val allNotes: LiveData<List<Note>>
@@ -22,7 +28,8 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
 
 
     init {
-        val wordsDao = NoteDatabase.getDatabase(application).noteDao()
+        database = NoteDatabase.getDatabase(application)
+        val wordsDao = database.noteDao()
 
         repository = NotesRepository(wordsDao)
         allNotes = repository.allNotes
@@ -66,4 +73,25 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
         repository.updateNotesColor(notesIds, color)
     }
 
+    fun backupDatabase(outputStream: OutputStream, callback: () -> Unit) = GlobalScope.launch {
+        val result = async(Dispatchers.Main) {
+            database.saveDatabase(outputStream)
+        }
+        result.invokeOnCompletion {
+            callback()
+        }
+    }
+
+    fun restoreDatabase(inputStream: InputStream, callback: () -> Unit) = GlobalScope.launch {
+        val result = async(Dispatchers.Main) {
+            database.restoreDatabase(inputStream)
+        }
+        result.invokeOnCompletion {
+            callback()
+        }
+    }
+
+    fun deleteAll() = GlobalScope.launch {
+        repository.deleteAll()
+    }
 }

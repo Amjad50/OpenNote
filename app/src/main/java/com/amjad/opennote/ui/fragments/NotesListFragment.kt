@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +18,9 @@ import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialView
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 class NotesListFragment : Fragment() {
     private lateinit var binding: NotesListFragmentBinding
@@ -162,6 +166,36 @@ class NotesListFragment : Fragment() {
 
         // change the search icon on the keyboard, as we are doing on-time filtering
         searchActionView.imeOptions = EditorInfo.IME_NULL
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            // TODO: ask the user for a file to backup/restore to/from
+            R.id.menu_backup_database -> {
+                val file = File(context!!.filesDir, "backup")
+                val outstream = FileOutputStream(file)
+
+                viewModel.backupDatabase(outstream) {
+                    Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
+                }
+                true
+            }
+            R.id.menu_restore_database -> {
+                val file = File(context!!.filesDir, "backup")
+                val instream = FileInputStream(file)
+
+                viewModel.restoreDatabase(instream) {
+                    Toast.makeText(context, "RESTORE DONE", Toast.LENGTH_LONG).show()
+                }
+                true
+            }
+            R.id.menu_delete_database -> {
+                viewModel.deleteAll()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 
     private val actionModeCallback = object : ActionMode.Callback {
