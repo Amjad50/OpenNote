@@ -20,8 +20,6 @@ import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialView
-import java.io.File
-import java.io.FileInputStream
 
 class NotesListFragment : Fragment() {
     private lateinit var binding: NotesListFragmentBinding
@@ -184,14 +182,15 @@ class NotesListFragment : Fragment() {
                 true
             }
             R.id.menu_restore_database -> {
-                context?.also { context ->
-                    val file = File(context.filesDir, "backup")
-                    val instream = FileInputStream(file)
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "*/*"
+                intent.putExtra(Intent.EXTRA_TITLE, "opennote.onbak")
 
-                    viewModel.restoreDatabase(context, instream) {
-                        Toast.makeText(context, "RESTORE DONE", Toast.LENGTH_LONG).show()
-                    }
-                }
+                startActivityForResult(
+                    intent,
+                    REQUEST_RESTORE_DB_ACTION
+                )
                 true
             }
             R.id.menu_delete_database -> {
@@ -208,22 +207,44 @@ class NotesListFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_BACKUP_DB_ACTION
-            && resultCode == Activity.RESULT_OK
+        if (
+            resultCode == Activity.RESULT_OK
             && data != null
         ) {
-            context?.also { context ->
-                data.data?.also { uri ->
-                    val outstream = context.contentResolver.openOutputStream(uri)
+            when (requestCode) {
+                REQUEST_BACKUP_DB_ACTION -> {
+                    context?.also { context ->
+                        data.data?.also { uri ->
+                            val outstream = context.contentResolver.openOutputStream(uri)
 
-                    if (outstream != null) {
-                        viewModel.backupDatabase(context, outstream) {
-                            Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
-                            outstream.close()
+                            if (outstream != null) {
+                                viewModel.backupDatabase(context, outstream) {
+                                    Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
+                                    outstream.close()
+                                }
+                            }
+                        }
+                    }
+                }
+                REQUEST_RESTORE_DB_ACTION -> {
+                    context?.also { context ->
+                        data.data?.also { uri ->
+                            val instream = context.contentResolver.openInputStream(uri)
+
+                            if (instream != null) {
+                                // FIXME: if the file is wrong and importing result in error tha
+                                //  app will crash
+                                viewModel.restoreDatabase(context, instream) {
+                                    Toast.makeText(context, "RESTORE DONE", Toast.LENGTH_LONG)
+                                        .show()
+                                    instream.close()
+                                }
+                            }
                         }
                     }
                 }
             }
+
         }
     }
 
@@ -285,6 +306,7 @@ class NotesListFragment : Fragment() {
 
     companion object {
         const val REQUEST_BACKUP_DB_ACTION = 2
+        const val REQUEST_RESTORE_DB_ACTION = 3
     }
 
 }
