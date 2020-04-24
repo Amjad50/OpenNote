@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -117,6 +118,45 @@ abstract class BaseNoteEditFragment : Fragment() {
         }
     }
 
+    private fun addImageToNote(uri: Uri) {
+        Glide.with(this).asBitmap().load(uri).into(object : CustomTarget<Bitmap>() {
+            override fun onLoadCleared(placeholder: Drawable?) {
+            }
+
+            override fun onResourceReady(
+                bitmap: Bitmap,
+                transition: Transition<in Bitmap>?
+            ) {
+                try {
+                    // TODO: add error handling and more robust structure
+                    val imagesFolder = File(context?.filesDir, "images")
+                    imagesFolder.mkdir()
+
+                    val uuid = UUID.randomUUID().toString()
+                    viewModel.addImage(uuid)
+
+                    val savedImage = File(imagesFolder, "$uuid.png")
+
+                    val output = FileOutputStream(savedImage)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
+                    output.flush()
+                    output.close()
+                } catch (e: Exception) {
+                    when (e) {
+                        is FileNotFoundException, is IOException -> {
+                            Toast.makeText(
+                                context,
+                                "Error happened when trying to save the image",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        else -> throw e
+                    }
+                }
+            }
+        })
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -124,44 +164,9 @@ abstract class BaseNoteEditFragment : Fragment() {
             && resultCode == Activity.RESULT_OK
             && data != null
         ) {
-            val uri = data.data
-
-            Glide.with(this).asBitmap().load(uri).into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-
-                override fun onResourceReady(
-                    bitmap: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    try {
-                        // TODO: add error handling and more robust structure
-                        val imagesFolder = File(context?.filesDir, "images")
-                        imagesFolder.mkdir()
-
-                        val uuid = UUID.randomUUID().toString()
-                        viewModel.addImage(uuid)
-
-                        val savedImage = File(imagesFolder, "$uuid.png")
-
-                        val output = FileOutputStream(savedImage)
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
-                        output.flush()
-                        output.close()
-                    } catch (e: Exception) {
-                        when (e) {
-                            is FileNotFoundException, is IOException -> {
-                                Toast.makeText(
-                                    context,
-                                    "Error happened when trying to save the image",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                            else -> throw e
-                        }
-                    }
-                }
-            })
+            data.data?.also {
+                addImageToNote(it)
+            }
         }
     }
 

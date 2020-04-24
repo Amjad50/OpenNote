@@ -1,5 +1,7 @@
 package com.amjad.opennote.ui.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -20,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialView
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
 
 class NotesListFragment : Fragment() {
     private lateinit var binding: NotesListFragmentBinding
@@ -170,16 +171,16 @@ class NotesListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            // TODO: ask the user for a file to backup/restore to/from
             R.id.menu_backup_database -> {
-                context?.also { context ->
-                    val file = File(context.filesDir, "backup")
-                    val outstream = FileOutputStream(file)
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "*/*"
+                intent.putExtra(Intent.EXTRA_TITLE, "opennote.onbak")
 
-                    viewModel.backupDatabase(context, outstream) {
-                        Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
-                    }
-                }
+                startActivityForResult(
+                    intent,
+                    REQUEST_BACKUP_DB_ACTION
+                )
                 true
             }
             R.id.menu_restore_database -> {
@@ -202,6 +203,28 @@ class NotesListFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_BACKUP_DB_ACTION
+            && resultCode == Activity.RESULT_OK
+            && data != null
+        ) {
+            context?.also { context ->
+                data.data?.also { uri ->
+                    val outstream = context.contentResolver.openOutputStream(uri)
+
+                    if (outstream != null) {
+                        viewModel.backupDatabase(context, outstream) {
+                            Toast.makeText(context, "BACKUP DONE", Toast.LENGTH_LONG).show()
+                            outstream.close()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private val actionModeCallback = object : ActionMode.Callback {
@@ -258,6 +281,10 @@ class NotesListFragment : Fragment() {
             actionMode = null
             viewModel.selector.clearSelection()
         }
+    }
+
+    companion object {
+        const val REQUEST_BACKUP_DB_ACTION = 2
     }
 
 }
