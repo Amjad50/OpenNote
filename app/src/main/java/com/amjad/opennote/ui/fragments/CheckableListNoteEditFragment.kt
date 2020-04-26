@@ -87,7 +87,7 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
             // which helps a lot when saving the data to the database
             adapter.submitList(note.noteList.sorted())
 
-            // TODO: edit this to refresh only if an image was added or changed
+            // FIXME: edit this to refresh only if an image was added or changed
             adapter.refreshImage()
         })
     }

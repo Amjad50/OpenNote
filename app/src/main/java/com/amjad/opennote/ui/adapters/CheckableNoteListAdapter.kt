@@ -109,8 +109,6 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
             updateTextEditStrikethough(item)
 
             if (viewModel.selectNextListItem) {
-                // FIXME: when adding item while editing another, it will add it but hide the
-                //  keyboard, as it is set to "toggle"
                 requestFocusAndShowKeyboard(binding.textEdit, binding.root.context)
                 viewModel.selectNextListItem = false
             }

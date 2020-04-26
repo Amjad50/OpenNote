@@ -33,6 +33,8 @@ class NotesListAdapter(
         setHasStableIds(true)
         selector.addChangeObserver {
             // TODO: change to better update (performance)
+            //  Maybe use a mapping system between the id of the note and its position to trigger
+            //  update events only to the needed notes.
             notifyDataSetChanged()
         }
     }
@@ -61,6 +63,24 @@ class NotesListAdapter(
 
     inner class NoteViewHolder(private val binding: NoteitemViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        private fun openNote(note: Note) {
+            val action =
+                when (note.type) {
+                    NoteType.TEXT_NOTE ->
+                        NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(
+                            noteId = note.id
+                        )
+                    NoteType.CHECKABLE_LIST_NOTE ->
+                        NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
+                            noteId = note.id
+                        )
+                    NoteType.UNDEFINED_TYPE ->
+                        throw IllegalArgumentException("UNDEFINED_TYPE note, should not exist")
+                }
+
+            binding.root.findNavController().navigate(action)
+        }
+
         fun bind(note: Note) {
             binding.apply {
 
@@ -78,21 +98,7 @@ class NotesListAdapter(
                 selected = selector.isSelected(note.id)
                 setOnNoteClick {
                     if (!selector.hasSelection()) {
-                        val action =
-                            when (note.type) {
-                                NoteType.TEXT_NOTE ->
-                                    NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(
-                                        noteId = note.id
-                                    )
-                                NoteType.CHECKABLE_LIST_NOTE ->
-                                    NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
-                                        noteId = note.id
-                                    )
-                                NoteType.UNDEFINED_TYPE ->
-                                    throw IllegalArgumentException("UNDEFINED_TYPE note, should not exist")
-                            }
-
-                        it.findNavController().navigate(action)
+                        openNote(note)
                     } else {
                         selector.toggle(note.id)
                     }
@@ -101,7 +107,6 @@ class NotesListAdapter(
                     if (!selector.hasSelection()) {
                         selector.select(note.id)
                     } else {
-                        // TODO: change to preview the note and preserve the selection
                         selector.toggle(note.id)
                     }
                     true
@@ -121,7 +126,7 @@ class NotesListAdapter(
 
             val checked = notelist.size - unchecked
 
-            val numberToView = min(unchecked, 5)
+            val numberToView = min(unchecked, MAX_SHOWN_CHECKABLE_NOTE_LIST_ITEMS)
             val numberNotToView = unchecked - numberToView
 
             binding.innerNoteContainer.run {
@@ -131,16 +136,21 @@ class NotesListAdapter(
                             // TODO: show the items in the list that match the search
 
                             // FIXME: This is a feature, start with 'x' if you want to match
-                            //  CheckableNoteList only, but u need to use the first part of the
-                            //  list item, BUG -> FEATURE
+                            //  CheckableNoteList only, but u need to search for the first part of
+                            //  the list item only. XD ::  BUG -> FEATURE
                             val filter = if (currentFilter.startsWith('x', true))
                                 currentFilter.substring(1)
                             else
                                 currentFilter
 
+                            // apply the filter colors if they apply
                             text = getSpannedText(notelist[i].text, filter)
-                            setTextColor(0x8a000000.toInt())
+                            // match the color of the text to the default note text
+                            setTextColor(DEFAULT_NOTE_VIEW_TEXT_COLOR)
                             setButtonDrawable(R.drawable.ic_check_box_unchecked_for_notelist_item)
+
+                            // this checkbox is just for show and is treated as text
+                            //  (does not take action).
                             isEnabled = false
                             gravity = Gravity.START
                             isFocusable = false
@@ -198,6 +208,11 @@ class NotesListAdapter(
             }
             return spannedNote
         }
+    }
+
+    companion object {
+        private const val MAX_SHOWN_CHECKABLE_NOTE_LIST_ITEMS = 5
+        private const val DEFAULT_NOTE_VIEW_TEXT_COLOR = 0x8a000000.toInt()
     }
 }
 

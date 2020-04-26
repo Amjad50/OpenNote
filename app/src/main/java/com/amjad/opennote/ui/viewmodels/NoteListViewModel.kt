@@ -20,7 +20,7 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
 
     private val allNotes: LiveData<List<Note>>
     private val toBeSaved = mutableListOf<Note>()
-    private val filter = MutableLiveData<String>("")
+    private val filter = MutableLiveData("")
 
     val selector = NoteListSelector<Long>()
     val filteredAllNotes: LiveData<List<Note>>
