@@ -232,13 +232,17 @@ class NotesListFragment : Fragment() {
                             val instream = context.contentResolver.openInputStream(uri)
 
                             if (instream != null) {
-                                // FIXME: if the file is wrong and importing result in error tha
-                                //  app will crash
-                                viewModel.restoreDatabase(context, instream) {
+                                viewModel.restoreDatabase(context, instream, {
                                     Toast.makeText(context, "RESTORE DONE", Toast.LENGTH_LONG)
                                         .show()
                                     instream.close()
-                                }
+                                }, { throwable ->
+                                    // FIXME handle `throwable` properly for each type of exception
+                                    Toast.makeText(context, "ERROR IN RESTORING", Toast.LENGTH_LONG)
+                                        .show()
+
+                                    instream.close()
+                                })
                             }
                         }
                     }

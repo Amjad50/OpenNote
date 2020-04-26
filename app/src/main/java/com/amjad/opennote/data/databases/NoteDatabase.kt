@@ -2,7 +2,6 @@ package com.amjad.opennote.data.databases
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -88,8 +87,6 @@ abstract class NoteDatabase : RoomDatabase() {
                 val serializedNote = csv_reader.readNext()
                 if (serializedNote == null)
                     break
-
-                Log.i("BB", serializedNote.toList().toString())
 
                 val note = Note.deserializeStringArray(serializedNote) { images ->
                     val uuids = images.split("|").map { base64 ->

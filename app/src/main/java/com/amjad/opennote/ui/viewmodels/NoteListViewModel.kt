@@ -7,10 +7,7 @@ import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.repositories.NotesRepository
 import com.amjad.opennote.ui.adapters.NoteListSelector
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -75,25 +72,37 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
         repository.updateNotesColor(notesIds, color)
     }
 
-    fun backupDatabase(context: Context, outputStream: OutputStream, callback: () -> Unit) =
-        GlobalScope.launch {
-            val result = async(Dispatchers.Main) {
-                database.saveDatabase(context, outputStream)
-            }
-            result.invokeOnCompletion {
-                callback()
-            }
+    // TODO: compared ot restoreDatabase this functions need error handling???
+    fun backupDatabase(context: Context, outputStream: OutputStream, callback: () -> Unit) {
+        val result = GlobalScope.async(Dispatchers.Main) {
+            database.saveDatabase(context, outputStream)
         }
+        result.invokeOnCompletion {
+            callback()
+        }
+    }
 
-    fun restoreDatabase(context: Context, inputStream: InputStream, callback: () -> Unit) =
-        GlobalScope.launch {
-            val result = async(Dispatchers.Main) {
+    fun restoreDatabase(
+        context: Context,
+        inputStream: InputStream,
+        callback: () -> Unit,
+        errorHandler: (Throwable) -> Unit
+    ) = GlobalScope.launch(Dispatchers.Main) {
+        // supervisorScope is used to handle the errors and not pass them to outside of the scope.
+        supervisorScope {
+            // async is being used so we can wait for the result or the function to finish executing.
+            val result = async {
                 database.restoreDatabase(context, inputStream)
             }
-            result.invokeOnCompletion {
+
+            try {
+                result.await()
                 callback()
+            } catch (e: Throwable) {
+                errorHandler(e)
             }
         }
+    }
 
     fun deleteAll(context: Context) = GlobalScope.launch {
         val imagesFile = File(context.filesDir, "images")
