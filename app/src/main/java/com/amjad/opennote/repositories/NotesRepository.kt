@@ -34,4 +34,8 @@ class NotesRepository(private val noteDao: NoteDao) {
     suspend fun deleteAll() {
         noteDao.deleteAll()
     }
+
+    fun getChildrenNotes(parentId: Long): LiveData<List<Note>> {
+        return noteDao.getChildrenNotes(parentId)
+    }
 }

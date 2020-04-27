@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.R
 import com.amjad.opennote.data.entities.CheckableListNote
+import com.amjad.opennote.data.entities.FolderNote
 import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.NoteitemViewBinding
@@ -74,6 +75,10 @@ class NotesListAdapter(
                         NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
                             noteId = note.id
                         )
+                    NoteType.FOLDER_NOTE ->
+                        NotesListFragmentDirections.actionNoteListFragmentToSelf(
+                            noteId = note.id
+                        )
                     NoteType.UNDEFINED_TYPE ->
                         throw IllegalArgumentException("UNDEFINED_TYPE note, should not exist")
                 }
@@ -89,10 +94,15 @@ class NotesListAdapter(
                 // clear views
                 binding.innerNoteContainer.removeAllViews()
 
-                if (note.type == NoteType.CHECKABLE_LIST_NOTE)
-                    bindCheckableListNote(note.getCheckableListNote())
-                else
-                    bindTextNote(note)
+
+                when (note.type) {
+                    NoteType.CHECKABLE_LIST_NOTE ->
+                        bindCheckableListNote(note.getCheckableListNote())
+                    NoteType.FOLDER_NOTE ->
+                        bindFolderNote(note.getFolderNote())
+                    else ->
+                        bindTextNote(note)
+                }
 
                 this.note = note
                 selected = selector.isSelected(note.id)
@@ -114,6 +124,7 @@ class NotesListAdapter(
                 executePendingBindings()
             }
         }
+
 
         private fun bindCheckableListNote(note: CheckableListNote) {
             val notelist = note.noteList
@@ -183,6 +194,18 @@ class NotesListAdapter(
                         maxLines = 5
                         text = getSpannedText(note.note, currentFilter)
                     })
+            }
+        }
+
+
+        private fun bindFolderNote(note: FolderNote) {
+            // FIXME: add own view of FolderNote
+            binding.innerNoteContainer.run {
+                addView(TextView(context).apply {
+                    ellipsize = TextUtils.TruncateAt.END
+                    maxLines = 5
+                    text = getSpannedText(note.note, currentFilter)
+                })
             }
         }
 

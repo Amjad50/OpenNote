@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.*
 import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
+import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.repositories.NotesRepository
 import com.amjad.opennote.ui.adapters.NoteListSelector
 import kotlinx.coroutines.*
@@ -14,6 +15,13 @@ import java.io.OutputStream
 import java.util.*
 
 class NoteListViewModel(application: Application) : AndroidViewModel(application) {
+
+    // TODO: reorder members
+
+    var isNoteSelected: Boolean = false
+        private set(v) {
+            field = v
+        }
 
     private val database: NoteDatabase
     private val repository: NotesRepository
@@ -25,13 +33,16 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
     val selector = NoteListSelector<Long>()
     val filteredAllNotes: LiveData<List<Note>>
 
+    private val selectedNoteID = MutableLiveData<Long>()
 
     init {
         database = NoteDatabase.getDatabase(application)
         val wordsDao = database.noteDao()
 
         repository = NotesRepository(wordsDao)
-        allNotes = repository.allNotes
+        allNotes = Transformations.switchMap(selectedNoteID) { id ->
+            repository.getChildrenNotes(id)
+        }
 
         filteredAllNotes = Transformations.switchMap(filter) { filterString ->
             if (filterString.isNullOrEmpty())
@@ -108,5 +119,21 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
         val imagesFile = File(context.filesDir, "images")
         imagesFile.deleteRecursively()
         repository.deleteAll()
+    }
+
+    fun setNoteID(id: Long): Boolean {
+        if (!isNoteSelected) {
+            selectedNoteID.value = id
+            isNoteSelected = true
+            return true
+        }
+        return false
+    }
+
+    fun getNoteId(): Long = selectedNoteID.value ?: -1L
+
+
+    fun insertNewNote(type: NoteType) = viewModelScope.launch {
+        setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply { date = Date() }))
     }
 }

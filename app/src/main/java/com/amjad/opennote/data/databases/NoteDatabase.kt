@@ -1,6 +1,9 @@
 package com.amjad.opennote.data.databases
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.graphics.Color
 import android.util.Base64
 import androidx.room.Database
 import androidx.room.Room
@@ -12,6 +15,7 @@ import com.amjad.opennote.data.converters.DataConverters
 import com.amjad.opennote.data.converters.NoteTypeConverters
 import com.amjad.opennote.data.daos.NoteDao
 import com.amjad.opennote.data.entities.Note
+import com.amjad.opennote.data.entities.NoteType
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +24,7 @@ import kotlinx.coroutines.withContext
 import java.io.*
 import java.util.*
 
-@Database(entities = [Note::class], version = 4, exportSchema = false)
+@Database(entities = [Note::class], version = 6, exportSchema = false)
 @TypeConverters(DataConverters::class, NoteTypeConverters::class)
 abstract class NoteDatabase : RoomDatabase() {
 
@@ -150,6 +154,29 @@ abstract class NoteDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // increment the id by one because id 0 is the zero node
+                database.execSQL("UPDATE note_table SET id = -id - 1")
+                database.execSQL("UPDATE note_table SET id = -id")
+                database.insert(
+                    "note_table",
+                    SQLiteDatabase.CONFLICT_ABORT,
+                    DEFAULT_NOTE_FOLDER_CONTENTVALUES
+                )
+            }
+        }
+
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // remove the content of the note on the root folder
+                database.execSQL("UPDATE note_table SET note = \"\" WHERE id = 0")
+                database.execSQL("ALTER TABLE note_table ADD COLUMN parentId INT NOT NULL DEFAULT 0")
+                // the root does not have parent
+                database.execSQL("UPDATE note_table SET parentId = -1 WHERE id = 0")
+            }
+        }
+
         fun getDatabase(context: Context): NoteDatabase {
             val tempInstance =
                 INSTANCE
@@ -161,11 +188,38 @@ abstract class NoteDatabase : RoomDatabase() {
                     context.applicationContext,
                     NoteDatabase::class.java,
                     "word_database"
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                )
+                    .addMigrations(
+                        MIGRATION_1_2,
+                        MIGRATION_2_3,
+                        MIGRATION_3_4,
+                        MIGRATION_4_5,
+                        MIGRATION_5_6
+                    )
+                    .addCallback(object : Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            db.insert(
+                                "note_table",
+                                SQLiteDatabase.CONFLICT_ABORT,
+                                DEFAULT_NOTE_FOLDER_CONTENTVALUES
+                            )
+                        }
+                    })
                     .build()
                 INSTANCE = instance
                 return instance
             }
+        }
+
+        private val DEFAULT_NOTE_FOLDER_CONTENTVALUES = ContentValues(7).apply {
+            put("id", 0)
+            put("title", "")
+            put("note", "")
+            put("date", DataConverters().dateToTimestamp(Date()))
+            put("color", Color.WHITE)
+            put("type", NoteTypeConverters().typeToTypeCode(NoteType.FOLDER_NOTE))
+            put("images", "")
         }
     }
 }

@@ -24,6 +24,7 @@ open class Note(
     // FIXME: find a way to make this uneditable by users only room
     var images: String = ""
     var type: NoteType = NoteType.TEXT_NOTE
+    var parentId: Long = -1L
 
     fun getFormattedDate(): String {
         val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
@@ -47,14 +48,24 @@ open class Note(
         ).apply { images = this@Note.images }
     }
 
+    fun getFolderNote(): FolderNote {
+        if (type != NoteType.FOLDER_NOTE)
+            throw IllegalArgumentException("To get FolderNote note.type must be FOLDER_NOTE")
+
+        // No need to pass the images as they are not used.
+        return FolderNote(title, date, color, id)
+    }
+
     /**
      * @return the subclassed object based on the value of type
      */
     fun getNoteBasedOnType(): Note {
-        return if (type == NoteType.CHECKABLE_LIST_NOTE)
-            getCheckableListNote()
-        else
-            this
+        return when (type) {
+            NoteType.UNDEFINED_TYPE -> this
+            NoteType.TEXT_NOTE -> this
+            NoteType.CHECKABLE_LIST_NOTE -> getCheckableListNote()
+            NoteType.FOLDER_NOTE -> getFolderNote()
+        }
     }
 
     fun addImage(uuid: String) {
@@ -106,6 +117,7 @@ open class Note(
                 NoteType.UNDEFINED_TYPE -> Note()
                 NoteType.TEXT_NOTE -> Note()
                 NoteType.CHECKABLE_LIST_NOTE -> CheckableListNote()
+                NoteType.FOLDER_NOTE -> FolderNote()
             }
         }
 

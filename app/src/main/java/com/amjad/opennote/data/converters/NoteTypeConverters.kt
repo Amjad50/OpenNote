@@ -9,6 +9,7 @@ class NoteTypeConverters {
         return when (typeCode) {
             0 -> NoteType.TEXT_NOTE
             1 -> NoteType.CHECKABLE_LIST_NOTE
+            2 -> NoteType.FOLDER_NOTE
             else -> NoteType.UNDEFINED_TYPE
         }
     }

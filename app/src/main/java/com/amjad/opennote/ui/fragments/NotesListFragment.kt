@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.amjad.opennote.R
+import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.NotesListFragmentBinding
 import com.amjad.opennote.ui.adapters.NoteListSelector
 import com.amjad.opennote.ui.adapters.NotesListAdapter
@@ -22,6 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialView
 
 class NotesListFragment : Fragment() {
+    private val args: NotesListFragmentArgs by navArgs()
+
     private lateinit var binding: NotesListFragmentBinding
     private lateinit var viewModel: NoteListViewModel
     private lateinit var adapter: NotesListAdapter
@@ -46,6 +50,15 @@ class NotesListFragment : Fragment() {
             // CYAN is the closest to the default accent color
             context?.getColor(R.color.colorAccent) ?: Color.CYAN
         )
+
+        // TODO: edit this as there should always be root (id=0) folder note.
+        if (args.noteId == NEW_NOTE_ID) {
+            if (!viewModel.isNoteSelected) {
+                viewModel.insertNewNote(NoteType.FOLDER_NOTE)
+            }
+        } else
+            viewModel.setNoteID(args.noteId)
+
         binding.noteslistview.adapter = adapter
         binding.noteslistview.emptyView = binding.emptyView
 
@@ -117,7 +130,9 @@ class NotesListFragment : Fragment() {
         // before going to the new note, we clear the actionMode
         actionMode?.finish()
 
-        val action = NotesListFragmentDirections.actionMainFragmentToNoteEditFragment()
+        val action = NotesListFragmentDirections.actionMainFragmentToNoteEditFragment(
+            parentId = viewModel.getNoteId()
+        )
         findNavController()
             .navigate(action)
     }
@@ -126,7 +141,9 @@ class NotesListFragment : Fragment() {
         actionMode?.finish()
 
         val action =
-            NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment()
+            NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
+                parentId = viewModel.getNoteId()
+            )
         findNavController()
             .navigate(action)
     }
@@ -309,6 +326,8 @@ class NotesListFragment : Fragment() {
     }
 
     companion object {
+        const val NEW_NOTE_ID = -1L
+
         const val REQUEST_BACKUP_DB_ACTION = 2
         const val REQUEST_RESTORE_DB_ACTION = 3
     }
