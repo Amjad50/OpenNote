@@ -45,7 +45,10 @@ open class Note(
             date,
             color,
             id
-        ).apply { images = this@Note.images }
+        ).apply {
+            images = this@Note.images
+            parentId = this@Note.parentId
+        }
     }
 
     fun getFolderNote(): FolderNote {
@@ -53,7 +56,9 @@ open class Note(
             throw IllegalArgumentException("To get FolderNote note.type must be FOLDER_NOTE")
 
         // No need to pass the images as they are not used.
-        return FolderNote(title, date, color, id)
+        return FolderNote(title, date, color, id).apply {
+            parentId = this@Note.parentId
+        }
     }
 
     /**

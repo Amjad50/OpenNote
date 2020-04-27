@@ -31,8 +31,6 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
 
     var selectNextListItem = false
 
-    var parentId: Long = -1L
-
     init {
         val wordsDao = NoteDatabase.getDatabase(application).noteDao()
 
@@ -63,8 +61,11 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
     }
 
     // FIXME: detected a weird bug crashes here, something about cannot find apk file??
-    fun insertNewNote(type: NoteType) = viewModelScope.launch {
-        setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply { date = Date() }))
+    fun insertNewNote(type: NoteType, parentId: Long) = viewModelScope.launch {
+        setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply {
+            date = Date()
+            this.parentId = parentId
+        }))
     }
 
     fun updateCurrentNote() = GlobalScope.launch {
@@ -72,10 +73,6 @@ class NoteEditViewModel(application: Application) : AndroidViewModel(application
             val note = it.getNoteObject()
             // TODO: need condition to update the date, or from the view
             note.date = Date()
-
-            // only update it if its a new note.
-            if (parentId != -1L)
-                note.parentId = parentId
 
             if (!(note.title.isEmpty() && note.note.isEmpty()))
                 repository.updateNote(note)

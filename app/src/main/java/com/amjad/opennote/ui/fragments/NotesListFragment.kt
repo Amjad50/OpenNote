@@ -54,7 +54,7 @@ class NotesListFragment : Fragment() {
         // TODO: edit this as there should always be root (id=0) folder note.
         if (args.noteId == NEW_NOTE_ID) {
             if (!viewModel.isNoteSelected) {
-                viewModel.insertNewNote(NoteType.FOLDER_NOTE)
+                viewModel.insertNewNote(NoteType.FOLDER_NOTE, args.parentId)
             }
         } else
             viewModel.setNoteID(args.noteId)
@@ -143,6 +143,18 @@ class NotesListFragment : Fragment() {
         val action =
             NotesListFragmentDirections.actionNoteListFragmentToCheckableListNoteEditFragment(
                 parentId = viewModel.getNoteId()
+            )
+        findNavController()
+            .navigate(action)
+    }
+
+    private fun openFolderNote() {
+        actionMode?.finish()
+
+        val action =
+            NotesListFragmentDirections.actionNoteListFragmentToSelf(
+                parentId = viewModel.getNoteId(),
+                noteId = -1L    // to make a new note (because the default is 0)
             )
         findNavController()
             .navigate(action)

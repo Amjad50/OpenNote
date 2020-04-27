@@ -31,9 +31,7 @@ class TextNoteEditFragment : BaseNoteEditFragment() {
             if (!viewModel.isNoteSelected) {
                 requestFocusAndShowKeyboard(binding.noteEdit, context)
 
-                viewModel.insertNewNote(NoteType.TEXT_NOTE)
-
-                viewModel.parentId = args.parentId
+                viewModel.insertNewNote(NoteType.TEXT_NOTE, args.parentId)
             }
         } else
         // this might be redundant if the id was already set

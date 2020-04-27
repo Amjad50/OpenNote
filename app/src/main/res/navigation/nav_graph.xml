@@ -16,6 +16,10 @@
                 android:name="noteId"
                 android:defaultValue="0L"
                 app:argType="long" />
+        <argument
+                android:name="parentId"
+                android:defaultValue="-1L"
+                app:argType="long" />
 
         <action
                 android:id="@+id/action_mainFragment_to_noteEditFragment"

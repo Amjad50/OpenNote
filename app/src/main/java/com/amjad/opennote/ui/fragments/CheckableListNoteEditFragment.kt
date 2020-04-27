@@ -34,9 +34,7 @@ class CheckableListNoteEditFragment : BaseNoteEditFragment() {
         // start editing right away if this is a new note and insert the note into the database
         if (args.noteId == NEW_NOTE_ID) {
             if (!viewModel.isNoteSelected) {
-                viewModel.insertNewNote(NoteType.CHECKABLE_LIST_NOTE)
-
-                viewModel.parentId = args.parentId
+                viewModel.insertNewNote(NoteType.CHECKABLE_LIST_NOTE, args.parentId)
             }
         } else
         // this might be redundant if the id was already set

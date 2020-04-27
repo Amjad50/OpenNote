@@ -133,7 +133,10 @@ class NoteListViewModel(application: Application) : AndroidViewModel(application
     fun getNoteId(): Long = selectedNoteID.value ?: -1L
 
 
-    fun insertNewNote(type: NoteType) = viewModelScope.launch {
-        setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply { date = Date() }))
+    fun insertNewNote(type: NoteType, parentId: Long) = viewModelScope.launch {
+        setNoteID(repository.insert(Note.createNoteBasedOnType(type).apply {
+            date = Date()
+            this.parentId = parentId
+        }))
     }
 }
