@@ -103,18 +103,17 @@ class NotesListFragment : Fragment() {
 
         speedDial.inflate(R.menu.speed_dial_menu)
 
+        // childrens of speeddial actions
         speedDial.setOnActionSelectedListener {
             when (it.id) {
-                R.id.speed_dial_add_list_note -> {
-                    openNewListNote()
-                    false
-                }
-                else -> {
-                    false
-                }
+                R.id.speed_dial_add_list_note -> openNewListNote()
+                R.id.speed_dial_add_folder_note -> openNewFolderNote()
             }
+
+            false
         }
 
+        // main button actions
         speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
             override fun onMainActionSelected(): Boolean {
                 openNewTextNote()
@@ -148,7 +147,7 @@ class NotesListFragment : Fragment() {
             .navigate(action)
     }
 
-    private fun openFolderNote() {
+    private fun openNewFolderNote() {
         actionMode?.finish()
 
         val action =

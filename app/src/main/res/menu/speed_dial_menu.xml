@@ -4,4 +4,8 @@
             android:id="@+id/speed_dial_add_list_note"
             android:title="@string/new_list_note"
             android:icon="@drawable/ic_check_box" />
+    <item
+            android:id="@+id/speed_dial_add_folder_note"
+            android:title="@string/new_folder_note"
+            android:icon="@drawable/ic_create_new_folder" />
 </menu>
