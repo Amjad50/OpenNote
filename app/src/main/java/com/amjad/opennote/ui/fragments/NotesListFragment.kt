@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
 import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.NotesListFragmentBinding
@@ -68,6 +69,13 @@ class NotesListFragment : Fragment() {
 
         initSpeedDial(binding.speedDial)
 
+        // show the back button if the current folder is not the root
+        // this is used because for some reason when navigating to an instance of self
+        // ie. from NotesListFragment to another NotesListFragment it does
+        // not show the back button, so I'm showing it here by force
+        (activity as MainActivity?)?.run {
+            supportActionBar?.setDisplayHomeAsUpEnabled(args.noteId != 0L)
+        }
         return binding.root
     }
 
