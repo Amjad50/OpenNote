@@ -3,10 +3,18 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+                name="model"
+                type="com.amjad.opennote.ui.viewmodels.NoteListViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@{model.note.color}"
             tools:context=".ui.fragments.NotesListFragment">
 
         <com.amjad.opennote.ui.views.EmptyStatableRecyclerView
@@ -50,10 +58,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:sdExpansionMode="top"
-                app:sdMainFabClosedSrc="@drawable/ic_add"
                 app:sdMainFabClosedIconColor="@android:color/white"
-                app:sdMainFabOpenedSrc="@drawable/ic_create"
+                app:sdMainFabClosedSrc="@drawable/ic_add"
                 app:sdMainFabOpenedIconColor="@android:color/white"
+                app:sdMainFabOpenedSrc="@drawable/ic_create"
                 app:sdOverlayLayout="@id/speedDialOverLay"
                 app:sdUseReverseAnimationOnClose="true" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,6 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,11 +23,11 @@ import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialView
 
-class NotesListFragment : Fragment() {
+class NotesListFragment : BaseBaseNoteFragment() {
     private val args: NotesListFragmentArgs by navArgs()
 
     private lateinit var binding: NotesListFragmentBinding
-    private lateinit var viewModel: NoteListViewModel
+    override lateinit var viewModel: NoteListViewModel
     private lateinit var adapter: NotesListAdapter
     private var actionMode: ActionMode? = null
 
@@ -60,6 +59,9 @@ class NotesListFragment : Fragment() {
         } else
             viewModel.setNoteID(args.noteId)
 
+        binding.lifecycleOwner = this
+        binding.model = viewModel
+
         binding.noteslistview.adapter = adapter
         binding.noteslistview.emptyView = binding.emptyView
 
@@ -77,6 +79,12 @@ class NotesListFragment : Fragment() {
             supportActionBar?.setDisplayHomeAsUpEnabled(args.noteId != 0L)
         }
         return binding.root
+    }
+
+    override fun setupActionBar() {
+        // if not the root
+        if (args.noteId != 0L)
+            super.setupActionBar()
     }
 
     private fun setupSelectorObservers(selector: NoteListSelector<Long>) {
@@ -345,8 +353,6 @@ class NotesListFragment : Fragment() {
     }
 
     companion object {
-        const val NEW_NOTE_ID = -1L
-
         const val REQUEST_BACKUP_DB_ACTION = 2
         const val REQUEST_RESTORE_DB_ACTION = 3
     }
