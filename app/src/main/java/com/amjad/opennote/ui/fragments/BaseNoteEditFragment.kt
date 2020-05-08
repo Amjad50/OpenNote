@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -56,7 +57,10 @@ abstract class BaseNoteEditFragment : Fragment() {
             // save old style of the actionBar
             viewModel.oldStatusAndActionBarStyles.run {
                 if (!saved) {
-                    background = getColor(R.color.colorPrimary)
+                    // get the stored color if present, else fallback to the colorPrimary which is
+                    // the color of the root's actionBar
+                    background = (supportActionBar?.customView?.background as ColorDrawable?)?.color
+                        ?: getColor(R.color.colorPrimary)
                     elevation = supportActionBar?.elevation ?: 0f
                     statusBarColor = window.statusBarColor
                 }
@@ -82,6 +86,13 @@ abstract class BaseNoteEditFragment : Fragment() {
 
     private fun changeActionBarStyles(background: Int, elevation: Float, statusBarColor: Int) {
         (activity as MainActivity?)?.run {
+            // use customView to store the color of the actionBar, to be restored later
+            // we don't want to use customView, its just for storing purpose
+            supportActionBar?.setDisplayShowCustomEnabled(false)
+            // create a new view just to hold the color
+            supportActionBar?.customView = View(context).apply {
+                setBackgroundColor(background)
+            }
             supportActionBar?.setBackgroundDrawable(ColorDrawable(background))
             supportActionBar?.elevation = elevation
             window.statusBarColor = statusBarColor
