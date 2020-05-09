@@ -82,9 +82,15 @@ class NotesListFragment : BaseBaseNoteFragment() {
     }
 
     override fun setupActionBar() {
-        // if not the root
+        // if not the root change the colors and do the other stuff to actionBar
         if (args.noteId != 0L)
             super.setupActionBar()
+        else
+        // if this is the root, then remove the title view and show the original title
+            (activity as MainActivity?)?.run {
+                supportActionBar?.setDisplayShowCustomEnabled(false)
+                supportActionBar?.setDisplayShowTitleEnabled(true)
+            }
     }
 
     private fun setupSelectorObservers(selector: NoteListSelector<Long>) {
@@ -119,7 +125,7 @@ class NotesListFragment : BaseBaseNoteFragment() {
 
         speedDial.inflate(R.menu.speed_dial_menu)
 
-        // childrens of speeddial actions
+        // children of speedDial actions
         speedDial.setOnActionSelectedListener {
             when (it.id) {
                 R.id.speed_dial_add_list_note -> openNewListNote()

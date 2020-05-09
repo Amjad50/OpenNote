@@ -9,9 +9,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.amjad.opennote.R
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
@@ -116,17 +114,6 @@ abstract class BaseNoteEditFragment : BaseBaseNoteFragment() {
             data.data?.also {
                 addImageToNote(it)
             }
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        // hide the keyboard
-        context?.also {
-            val inputMethodManager =
-                ContextCompat.getSystemService(it, InputMethodManager::class.java)
-            inputMethodManager?.hideSoftInputFromWindow(view?.windowToken, 0)
         }
     }
 

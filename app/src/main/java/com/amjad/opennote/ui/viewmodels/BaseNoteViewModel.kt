@@ -6,6 +6,7 @@ import com.amjad.opennote.data.databases.NoteDatabase
 import com.amjad.opennote.data.entities.Note
 import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.repositories.NotesRepository
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -70,5 +71,23 @@ abstract class BaseNoteViewModel(application: Application) : AndroidViewModel(ap
         var background: Int = 0
         var elevation: Float = 0f
         var statusBarColor: Int = 0
+    }
+
+    private fun updateCurrentNote() = GlobalScope.launch {
+        note.value?.also {
+            val note = it.getNoteObject()
+            // TODO: need condition to update the date, or from the view
+            note.date = Date()
+
+            // only delete empty notes that are not folders
+            if (note.title.isNotEmpty() || note.note.isNotEmpty() || note.type == NoteType.FOLDER_NOTE)
+                repository.updateNote(note)
+            else
+                repository.deleteNote(note)
+        }
+    }
+
+    override fun onCleared() {
+        updateCurrentNote()
     }
 }

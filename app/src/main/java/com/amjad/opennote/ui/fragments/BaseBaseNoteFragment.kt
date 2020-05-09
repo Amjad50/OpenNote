@@ -2,11 +2,14 @@ package com.amjad.opennote.ui.fragments
 
 import android.graphics.drawable.ColorDrawable
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
+import com.amjad.opennote.databinding.ActionBarTitleBinding
 import com.amjad.opennote.ui.viewmodels.BaseNoteViewModel
 
 abstract class BaseBaseNoteFragment : Fragment() {
@@ -19,10 +22,19 @@ abstract class BaseBaseNoteFragment : Fragment() {
         setupActionBar()
     }
 
-    open protected fun setupActionBar() {
-        // remove the title from the actionBar
+    protected open fun setupActionBar() {
         (activity as MainActivity?)?.run {
-            supportActionBar?.title = null
+            // remove the title from the actionBar
+            // and enable the editable title view
+            supportActionBar?.setDisplayShowCustomEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+
+            // build the title view, and pass the model to get the title from it
+            val binding = ActionBarTitleBinding.inflate(layoutInflater)
+            binding.model = viewModel
+            binding.lifecycleOwner = this@BaseBaseNoteFragment
+
+            supportActionBar?.customView = binding.root
 
             // save old style of the actionBar
             viewModel.oldStatusAndActionBarStyles.run {
@@ -55,30 +67,48 @@ abstract class BaseBaseNoteFragment : Fragment() {
         }
     }
 
-    protected fun changeActionBarStyles(background: Int, elevation: Float, statusBarColor: Int) {
-        (activity as MainActivity?)?.run {
-            // use customView to store the color of the actionBar, to be restored later
-            // we don't want to use customView, its just for storing purpose
-            supportActionBar?.setDisplayShowCustomEnabled(false)
-            // create a new view just to hold the color
-            supportActionBar?.customView = View(context).apply {
-                setBackgroundColor(background)
-            }
-            supportActionBar?.setBackgroundDrawable(ColorDrawable(background))
-            supportActionBar?.elevation = elevation
-            window.statusBarColor = statusBarColor
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
+    protected fun restoreActionBar() {
         viewModel.oldStatusAndActionBarStyles.run {
             if (saved)
                 changeActionBarStyles(background, elevation, statusBarColor)
             // to save again if this is just a configuration change
             saved = false
         }
+    }
+
+    protected fun changeActionBarStyles(background: Int, elevation: Float, statusBarColor: Int) {
+        (activity as MainActivity?)?.run {
+            // if there is no customView present, then create an empty one just to store the color
+            if (supportActionBar?.customView == null)
+                supportActionBar?.customView = View(context)
+
+            // use customView to store the color of the actionBar, to be restored later
+            supportActionBar?.customView?.apply {
+                setBackgroundColor(background)
+            }
+
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(background))
+            supportActionBar?.elevation = elevation
+            window.statusBarColor = statusBarColor
+        }
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+
+        // hide the keyboard
+        context?.also {
+            val inputMethodManager =
+                ContextCompat.getSystemService(it, InputMethodManager::class.java)
+            inputMethodManager?.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        restoreActionBar()
     }
 
     companion object {
