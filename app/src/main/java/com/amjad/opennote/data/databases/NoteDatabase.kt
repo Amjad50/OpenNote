@@ -202,7 +202,9 @@ abstract class NoteDatabase : RoomDatabase() {
                             db.insert(
                                 "note_table",
                                 SQLiteDatabase.CONFLICT_ABORT,
-                                DEFAULT_NOTE_FOLDER_CONTENTVALUES
+                                DEFAULT_NOTE_FOLDER_CONTENTVALUES.apply {
+                                    put("parentId", -1)
+                                }
                             )
                         }
                     })
@@ -220,7 +222,6 @@ abstract class NoteDatabase : RoomDatabase() {
             put("color", Color.WHITE)
             put("type", NoteTypeConverters().typeToTypeCode(NoteType.FOLDER_NOTE))
             put("images", "")
-            put("parentId", -1)
         }
     }
 }
