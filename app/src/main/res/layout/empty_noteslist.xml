@@ -11,12 +11,12 @@
             android:layout_height="225dp"
             android:adjustViewBounds="true"
             android:alpha=".5"
-            android:contentDescription="@string/sad_image_description"
+            android:contentDescription="@string/application_icon_description"
             android:scaleType="fitStart"
-            app:srcCompat="@drawable/ic_sad_face" />
+            app:srcCompat="@drawable/ic_launcher_icon_foreground" />
 
     <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty_noteslist_message"
             android:textAlignment="center"
