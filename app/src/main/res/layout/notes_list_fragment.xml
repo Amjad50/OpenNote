@@ -17,7 +17,7 @@
             android:background="@{model.note.color}"
             tools:context=".ui.fragments.NotesListFragment">
 
-        <com.amjad.opennote.ui.views.EmptyStatableRecyclerView
+        <com.amjad.opennote.ui.views.EmptySearchableStatableRecyclerView
                 android:id="@+id/noteslistview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -34,6 +34,17 @@
         <include
                 android:id="@+id/empty_view"
                 layout="@layout/empty_noteslist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+                android:id="@+id/filter_not_found"
+                layout="@layout/filter_not_found_noteslist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"

@@ -64,6 +64,8 @@ class NotesListFragment : BaseBaseNoteFragment() {
 
         binding.noteslistview.adapter = adapter
         binding.noteslistview.emptyView = binding.emptyView
+        binding.noteslistview.filterNotFoundView = binding.filterNotFound
+        binding.noteslistview.viewModel = viewModel
 
         setupSelectorObservers(viewModel.selector)
 

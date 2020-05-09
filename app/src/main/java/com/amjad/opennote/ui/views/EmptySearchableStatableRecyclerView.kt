@@ -4,10 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.amjad.opennote.ui.viewmodels.NoteListViewModel
 
-class EmptyStatableRecyclerView : RecyclerView {
+// FIXME: horrible name
+class EmptySearchableStatableRecyclerView : RecyclerView {
 
     var emptyView: View? = null
+    var filterNotFoundView: View? = null
+    var viewModel: NoteListViewModel? = null
 //    private var isEmptyNow = false
 
     private val emptyStateObserver = object : RecyclerView.AdapterDataObserver() {
@@ -45,8 +49,11 @@ class EmptyStatableRecyclerView : RecyclerView {
 
     private fun updateEmptyState() {
         val isEmpty = adapter?.itemCount == 0
+        val isFilterPresent = viewModel?.getNotesListFilter().isNullOrEmpty()
         visibility = if (isEmpty) GONE else VISIBLE
-        emptyView?.visibility = if (isEmpty) VISIBLE else GONE
+
+        emptyView?.visibility = if (isEmpty && isFilterPresent) VISIBLE else GONE
+        filterNotFoundView?.visibility = if (isEmpty && !isFilterPresent) VISIBLE else GONE
 
 
         // TODO: use this cross fade later (fix it)

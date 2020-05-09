@@ -35,4 +35,5 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="restore">Restore</string>
     <string name="delete_all">Delete All</string>
     <string name="new_folder_note">Create Folder</string>
+    <string name="not_found_message">Not Found</string>
 </resources>
