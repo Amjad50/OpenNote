@@ -11,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
 import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
@@ -33,6 +34,15 @@ abstract class BaseNoteEditFragment : BaseBaseNoteFragment() {
         viewModel = ViewModelProvider(this)[NoteEditViewModel::class.java]
 
         setHasOptionsMenu(true)
+    }
+
+    override fun setupActionBar() {
+        super.setupActionBar()
+
+        // after setup just hide the new custom view, as this should be shown only on FolderNotes
+        (activity as MainActivity?)?.run {
+            supportActionBar?.setDisplayShowCustomEnabled(false)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

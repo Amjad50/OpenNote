@@ -66,24 +66,23 @@
                         app:noteImage="@{model.note.lastImage}"
                         tools:srcCompat="@drawable/ic_launcher_icon_foreground" />
 
-                <!--                                old title edit view-->
-                <!--                                <com.google.android.material.textfield.TextInputEditText-->
-                <!--                                        android:id="@+id/title_edit"-->
-                <!--                                        android:layout_width="0dp"-->
-                <!--                                        android:layout_height="wrap_content"-->
-                <!--                                        android:layout_marginLeft="16dp"-->
-                <!--                                        android:layout_marginTop="16dp"-->
-                <!--                                        android:layout_marginRight="16dp"-->
-                <!--                                        android:background="@null"-->
-                <!--                                        android:ems="10"-->
-                <!--                                        android:hint="@string/title_hint"-->
-                <!--                                        android:inputType="text"-->
-                <!--                                        android:singleLine="true"-->
-                <!--                                        android:text="@={model.note.title}"-->
-                <!--                                        android:textSize="24sp"-->
-                <!--                                        app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                                        app:layout_constraintStart_toStartOf="parent"-->
-                <!--                                        app:layout_constraintTop_toBottomOf="@id/image" />-->
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/title_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@null"
+                        android:ems="10"
+                        android:hint="@string/title_hint"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:text="@={model.note.title}"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/image" />
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_edit"
@@ -100,7 +99,7 @@
                         android:text="@={model.note.note}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/image" />
+                        app:layout_constraintTop_toBottomOf="@id/title_edit" />
 
                 <View
                         android:id="@+id/outside_note_click_view"

@@ -20,7 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
     OffsettedListAdapter<CheckableListNote.Item, CheckableNoteListAdapter.BaseCheckableNoteItemViewHolder>(
-        CheckableNoteListDiffItemCallBack(), 1, 0, 1
+        CheckableNoteListDiffItemCallBack(), 1, 1, 1
     ) {
 
     override fun onCreateViewHolder(
