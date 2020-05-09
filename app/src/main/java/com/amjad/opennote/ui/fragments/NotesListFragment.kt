@@ -184,7 +184,10 @@ class NotesListFragment : BaseBaseNoteFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.notes_list_menu, menu)
+        inflater.inflate(
+            if (args.noteId == 0L) R.menu.root_notes_list_menu else R.menu.notes_list_menu,
+            menu
+        )
 
         val searchAction = menu.findItem(R.id.menu_search_action)
         val searchActionView = searchAction.actionView as SearchView
@@ -253,7 +256,6 @@ class NotesListFragment : BaseBaseNoteFragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

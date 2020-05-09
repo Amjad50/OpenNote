@@ -8,4 +8,19 @@
             android:title="@string/search"
             app:actionViewClass="androidx.appcompat.widget.SearchView"
             app:showAsAction="always|collapseActionView" />
+
+    <item
+            android:id="@+id/menu_backup_database"
+            android:title="@string/backup"
+            app:showAsAction="never" />
+
+    <item
+            android:id="@+id/menu_restore_database"
+            android:title="@string/restore"
+            app:showAsAction="never" />
+
+    <item
+            android:id="@+id/menu_delete_database"
+            android:title="@string/delete_all"
+            app:showAsAction="never" />
 </menu>
