@@ -37,4 +37,5 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="new_folder_note">Create Folder</string>
     <string name="not_found_message">Not Found</string>
     <string name="application_icon_description">OpenNote App Icon</string>
+    <string name="note_type_description">Note Type</string>
 </resources>

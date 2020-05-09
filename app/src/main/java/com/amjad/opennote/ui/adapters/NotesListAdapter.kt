@@ -183,6 +183,7 @@ class NotesListAdapter(
                         }
                     )
             }
+            binding.noteTypeIcon.setImageResource(R.drawable.ic_check_box)
         }
 
 
@@ -195,18 +196,13 @@ class NotesListAdapter(
                         text = getSpannedText(note.note, currentFilter)
                     })
             }
+            binding.noteTypeIcon.setImageResource(R.drawable.ic_create)
         }
 
 
         private fun bindFolderNote(note: FolderNote) {
             // FIXME: add own view of FolderNote
-            binding.innerNoteContainer.run {
-                addView(TextView(context).apply {
-                    ellipsize = TextUtils.TruncateAt.END
-                    maxLines = 5
-                    text = getSpannedText(note.note, currentFilter)
-                })
-            }
+            binding.noteTypeIcon.setImageResource(R.drawable.ic_folder)
         }
 
         // FIXME: slow algorithm to compute the spans

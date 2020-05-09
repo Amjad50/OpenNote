@@ -56,19 +56,39 @@
                     app:noteImage="@{note.lastImage}"
                     tools:srcCompat="@drawable/ic_launcher_icon_foreground" />
 
-            <TextView
-                    android:id="@+id/note_title_view"
+            <LinearLayout
+                    android:id="@+id/title_view_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="@{note.title.empty ? View.GONE : View.VISIBLE}"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/image"
-                    tools:text="Note title" />
+                    app:layout_constraintTop_toBottomOf="@id/image">
+
+                <TextView
+                        android:id="@+id/note_title_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="Note title" />
+
+                <!-- FIXME: add description for each note type -->
+                <ImageView
+                        android:id="@+id/note_type_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:contentDescription="@string/note_type_description"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_create"
+                        android:tint="#75ffffff" />
+            </LinearLayout>
 
             <LinearLayout
                     android:id="@+id/inner_note_container"
@@ -77,7 +97,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/note_title_view" />
+                    app:layout_constraintTop_toBottomOf="@+id/title_view_container" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
