@@ -137,6 +137,12 @@ class NotesListFragment : BaseBaseNoteFragment() {
             false
         }
 
+        // manually setup the listener as sometimes it does not work
+        binding.speedDialOverLay.setOnClickListener {
+            binding.speedDial.close(true)
+            binding.speedDialOverLay.hide(true)
+        }
+
         // main button actions
         speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
             override fun onMainActionSelected(): Boolean {
@@ -144,7 +150,12 @@ class NotesListFragment : BaseBaseNoteFragment() {
                 return false
             }
 
-            override fun onToggleChanged(isOpen: Boolean) {}
+            override fun onToggleChanged(isOpen: Boolean) {
+                // For some reason the speedDialOverlay sometimes does not work
+                // so, this is to manually invoke it and make it work
+                if (isOpen)
+                    binding.speedDialOverLay.show(true)
+            }
         })
 
     }
