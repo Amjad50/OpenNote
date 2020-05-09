@@ -220,6 +220,7 @@ abstract class NoteDatabase : RoomDatabase() {
             put("color", Color.WHITE)
             put("type", NoteTypeConverters().typeToTypeCode(NoteType.FOLDER_NOTE))
             put("images", "")
+            put("parentId", -1)
         }
     }
 }
