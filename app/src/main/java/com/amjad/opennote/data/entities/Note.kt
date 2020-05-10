@@ -93,7 +93,7 @@ open class Note(
     }
 
     override fun toString(): String {
-        return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id)"
+        return "Note(type=$type, title='$title', note='$note', date=$date, color=$color, id=$id, parentId=$parentId)"
     }
 
     fun getSerializedStringArray(imagesCallback: (Array<String>) -> String): Array<String> {
@@ -104,7 +104,8 @@ open class Note(
             DataConverters().dateToTimestamp(date).toString(),
             color.toString(),
             NoteTypeConverters().typeToTypeCode(type).toString(),
-            imagesCallback(getAllImages())
+            imagesCallback(getAllImages()),
+            parentId.toString()
         )
     }
 
@@ -135,7 +136,7 @@ open class Note(
         }
 
         fun serializedStringHeaderArray(): Array<String> {
-            return arrayOf("id", "title", "note", "date", "color", "type", "images")
+            return arrayOf("id", "title", "note", "date", "color", "type", "images", "parentId")
         }
 
         fun deserializeStringArray(array: Array<String>, imagesCallback: (String) -> String): Note {
@@ -143,12 +144,15 @@ open class Note(
             return Note(
                 id = array[0].toLong(),
                 title = array[1],
-                note = decodeNote(array[2]), date =
-                DataConverters().fromTimestamp(array[3].toLong()),
+                note = decodeNote(array[2]),
+                date = DataConverters().fromTimestamp(array[3].toLong()),
                 color = array[4].toInt()
             ).apply {
                 type = NoteTypeConverters().fromTypeCode(array[5].toInt())
                 images = imagesCallback(array[6])
+                // there was a release that support backup without parentId,
+                // in that case, make them children of root
+                parentId = (array.getOrElse(7) { "0" }).toLong()
             }
         }
     }

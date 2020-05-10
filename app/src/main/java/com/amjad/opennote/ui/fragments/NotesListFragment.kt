@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -306,6 +307,8 @@ class NotesListFragment : BaseBaseNoteFragment() {
                                     Toast.makeText(context, "ERROR IN RESTORING", Toast.LENGTH_LONG)
                                         .show()
 
+                                    Log.e(TAG, Log.getStackTraceString(throwable))
+
                                     instream.close()
                                 })
                             }
@@ -376,6 +379,8 @@ class NotesListFragment : BaseBaseNoteFragment() {
     companion object {
         const val REQUEST_BACKUP_DB_ACTION = 2
         const val REQUEST_RESTORE_DB_ACTION = 3
+
+        val TAG = NotesListFragment::class.simpleName ?: ""
     }
 
 }
