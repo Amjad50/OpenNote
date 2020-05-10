@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
-import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -51,16 +50,6 @@ abstract class BaseNoteEditFragment : BaseBaseNoteFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.edit_menu_color_action -> {
-                parentFragmentManager.also { fragmentManager ->
-                    ColorChooseDialog().setOnColorClick { color ->
-                        viewModel.note.value?.color = color
-
-                        viewModel.notifyNoteUpdated()
-                    }.show(fragmentManager, "ColorChooseDialogInEdit")
-                }
-                true
-            }
             R.id.edit_menu_add_image_action -> {
                 startActivityForResult(
                     Intent(

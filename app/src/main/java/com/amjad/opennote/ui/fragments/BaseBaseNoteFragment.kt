@@ -1,6 +1,7 @@
 package com.amjad.opennote.ui.fragments
 
 import android.graphics.drawable.ColorDrawable
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -10,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.amjad.opennote.MainActivity
 import com.amjad.opennote.R
 import com.amjad.opennote.databinding.ActionBarTitleBinding
+import com.amjad.opennote.ui.dialogs.ColorChooseDialog
 import com.amjad.opennote.ui.viewmodels.BaseNoteViewModel
 
 abstract class BaseBaseNoteFragment : Fragment() {
@@ -93,7 +95,6 @@ abstract class BaseBaseNoteFragment : Fragment() {
         }
     }
 
-
     override fun onStop() {
         super.onStop()
 
@@ -109,6 +110,25 @@ abstract class BaseBaseNoteFragment : Fragment() {
         super.onDestroy()
 
         restoreActionBar()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // handle common menu items in all notes
+        return when (item.itemId) {
+            // even that this function is present in the root folder, but this id is not present
+            // in the menu, so it will not be called and the user cannot change the color of root
+            R.id.edit_menu_color_action -> {
+                parentFragmentManager.also { fragmentManager ->
+                    ColorChooseDialog().setOnColorClick { color ->
+                        viewModel.note.value?.color = color
+
+                        viewModel.notifyNoteUpdated()
+                    }.show(fragmentManager, "ColorChooseDialogInEdit")
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     companion object {

@@ -8,4 +8,9 @@
             android:title="@string/search"
             app:actionViewClass="androidx.appcompat.widget.SearchView"
             app:showAsAction="always|collapseActionView" />
+    <item
+            android:id="@+id/edit_menu_color_action"
+            android:icon="@drawable/ic_colors"
+            android:title="@string/menu_color"
+            app:showAsAction="ifRoom" />
 </menu>
