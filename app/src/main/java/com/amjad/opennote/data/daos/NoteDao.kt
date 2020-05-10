@@ -15,7 +15,7 @@ interface NoteDao {
     @Query("SELECT * FROM note_table WHERE id = :id")
     fun getNote(id: Long): LiveData<Note>
 
-    @Query("SELECT * FROM note_table WHERE parentId = :parentId")
+    @Query("SELECT * FROM note_table WHERE parentId = :parentId ORDER BY id DESC")
     fun getChildrenNotes(parentId: Long): LiveData<List<Note>>
 
     @Update
