@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.amjad.opennote.R
@@ -14,6 +15,7 @@ import com.amjad.opennote.databinding.CheckableAddNewItemViewBinding
 import com.amjad.opennote.databinding.CheckableImageItemBinding
 import com.amjad.opennote.databinding.CheckableNoteItemBinding
 import com.amjad.opennote.databinding.CheckableTitleItemBinding
+import com.amjad.opennote.ui.dialogs.ConfirmImageDeletionDialog
 import com.amjad.opennote.ui.viewmodels.NoteEditViewModel
 import com.amjad.opennote.utils.requestFocusAndShowKeyboard
 import com.google.android.material.snackbar.Snackbar
@@ -169,6 +171,19 @@ class CheckableNoteListAdapter(private val viewModel: NoteEditViewModel) :
         BaseCheckableNoteItemViewHolder(binding.root) {
         fun bind(viewModel: NoteEditViewModel) {
             binding.model = viewModel
+            binding.image.setOnLongClickListener {
+                // get the fragment manager from the context of the activity\
+                (binding.root.context)?.also { context ->
+                    (context as AppCompatActivity).supportFragmentManager.also { fragmentManager ->
+                        ConfirmImageDeletionDialog()
+                            .setOnConfirm {
+                                viewModel.deleteLastImage(context)
+                                viewModel.notifyNoteUpdated()
+                            }.show(fragmentManager, "ImageDeleteDialogInEdit")
+                    }
+                }
+                true
+            }
         }
     }
 

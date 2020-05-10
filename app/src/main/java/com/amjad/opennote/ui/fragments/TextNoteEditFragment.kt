@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.amjad.opennote.data.entities.NoteType
 import com.amjad.opennote.databinding.TextNoteEditFragmentBinding
+import com.amjad.opennote.ui.dialogs.ConfirmImageDeletionDialog
 import com.amjad.opennote.utils.requestFocusAndShowKeyboard
 
 
@@ -45,6 +46,19 @@ class TextNoteEditFragment : BaseNoteEditFragment() {
                 // move selection to the end (cursor)
                 setSelection(text?.length ?: 0)
             }
+        }
+
+        binding.image.setOnLongClickListener {
+            context?.also { context ->
+                parentFragmentManager.also { fragmentManager ->
+                    ConfirmImageDeletionDialog()
+                        .setOnConfirm {
+                            viewModel.deleteLastImage(context)
+                            viewModel.notifyNoteUpdated()
+                        }.show(fragmentManager, "ImageDeleteDialogInEdit")
+                }
+            }
+            true
         }
 
         return binding.root
