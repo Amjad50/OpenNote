@@ -10,6 +10,17 @@
         <item name="android:textDirection">firstStrongLtr</item>
         <item name="actionModeCloseDrawable">@drawable/ic_close_x</item>
         <item name="android:imeOptions">flagNoExtractUi</item>
+        <item name="android:alertDialogTheme">@style/AlertDialog</item>
+        <item name="alertDialogTheme">@style/AlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/AlertDialog</item>
     </style>
 
+    <style name="AlertDialog.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog.Flush">
+        <item name="android:textColor">?attr/colorAccent</item>
+    </style>
+
+    <style name="AlertDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:buttonBarNegativeButtonStyle">@style/AlertDialog.Button</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/AlertDialog.Button</item>
+    </style>
 </resources>
