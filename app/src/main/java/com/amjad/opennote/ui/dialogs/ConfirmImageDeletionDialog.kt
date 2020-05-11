@@ -15,10 +15,10 @@ class ConfirmImageDeletionDialog : DialogFragment() {
             val builder = AlertDialog.Builder(activity)
 
             builder.setMessage(R.string.delete_image_dialog_message)
-                .setPositiveButton(R.string.okay) { dialog, id ->
+                .setPositiveButton(R.string.okay) { _, _ ->
                     handler?.invoke()
                 }
-                .setNegativeButton(R.string.cancel) { dialog, id ->
+                .setNegativeButton(R.string.cancel) { dialog, _ ->
                     dialog.cancel()
                 }
 

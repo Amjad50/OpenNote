@@ -2,9 +2,6 @@ package com.amjad.opennote.ui.viewmodels
 
 import android.app.Application
 import android.content.Context
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
-import com.bumptech.glide.Glide
 import java.io.File
 
 class NoteEditViewModel(application: Application) : BaseNoteViewModel(application) {
@@ -27,21 +24,6 @@ class NoteEditViewModel(application: Application) : BaseNoteViewModel(applicatio
                 // delete from the device
                 val imageFile = File(context.filesDir, "images/$uuid.png")
                 imageFile.delete()
-            }
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        @BindingAdapter("noteImage")
-        fun loadImage(view: ImageView, uuid: String?) {
-            if (!uuid.isNullOrBlank()) {
-                val image = File(view.context.filesDir, "images/$uuid.png")
-                Glide.with(view.context)
-                    .load(image)
-                    .into(view)
-            } else {
-                view.setImageDrawable(null)
             }
         }
     }

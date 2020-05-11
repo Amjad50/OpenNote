@@ -199,7 +199,6 @@ class NotesListAdapter(
             binding.noteTypeIcon.setImageResource(R.drawable.ic_create)
         }
 
-
         private fun bindFolderNote(note: FolderNote) {
             // FIXME: add own view of FolderNote
             binding.noteTypeIcon.setImageResource(R.drawable.ic_folder)
