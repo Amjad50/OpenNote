@@ -22,7 +22,6 @@
                 type="Boolean" />
     </data>
 
-    <!--    TODO: add ripple effect-->
     <com.google.android.material.card.MaterialCardView
             android:id="@+id/note_view_card"
             android:layout_width="match_parent"
@@ -34,7 +33,6 @@
             app:cardElevation="2dp"
             app:cardPreventCornerOverlap="false"
             app:contentPadding="8dp"
-            app:rippleColor="@color/colorAccent"
             app:strokeColor='@{selected ? Color.BLACK : 0x0}'
             app:strokeWidth="2dp">
 
