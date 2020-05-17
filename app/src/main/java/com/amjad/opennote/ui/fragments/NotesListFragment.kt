@@ -260,12 +260,6 @@ class NotesListFragment : BaseBaseNoteFragment() {
                 )
                 true
             }
-            R.id.menu_delete_database -> {
-                context?.also {
-                    viewModel.deleteAll(it)
-                }
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
