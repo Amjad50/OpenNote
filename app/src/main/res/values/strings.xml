@@ -39,6 +39,6 @@ Fusce elementum tempus purus, lacinia rhoncus diam vehicula sed. Pellentesque di
     <string name="application_icon_description">OpenNote App Icon</string>
     <string name="note_type_description">Note Type</string>
     <string name="delete_image_dialog_message">Delete image?</string>
-    <string name="okay">OKAY</string>
-    <string name="cancel">CENCEL</string>
+    <string name="okay">Okay</string>
+    <string name="cancel">@android:string/cancel</string>
 </resources>
